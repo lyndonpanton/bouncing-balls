@@ -19,7 +19,7 @@ void read_config_file_circle(std::vector<Shape*>&, std::ifstream&);
 void read_config_file_rectangle(std::vector<Shape*>&, std::ifstream&);
 
 void game_loop_update(sf::RenderWindow&, std::vector<Shape*>&);
-void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&);
+void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&, sf::Font&);
 
 int main()
 {
@@ -27,32 +27,36 @@ int main()
 		TODO
 
 		- SFML
-			- Shapes should bounce off the bounds of the window
-			- Add point count to Circle class
-			- Circle class only needs one scale component (not an array)
-			- Display the name of shapes in the center of shapes on the screen
+			- [x] Shapes should bounce off the bounds of the window
+			- [ ] Add point count to Circle class
+			- [ ] Circle class only needs a primitive for the scale (not an
+			array)
+			- [ ] Display the name of shapes in the center of shapes on the screen
+				- [x] Display names
+				- [ ] Center names
 			- You do not have to handle the event where users rapidly change a shape's
 			scale which causes it to go out of the bounds of the window
 
 		- ImGui
-			- Have a list of all shapes (combo box)
-			- Allow users to edit the name of a shape
-			- Allow users to edit the visibility of a shape
-			- Allow users to edit the velocity of a shape
-			- Allow users to edit the colour of a shape
-			- Allow users to edit the scale of a shape (0 to 4)
+			- [ ] Have a list of all shapes (combo box)
+			- [ ] Allow users to edit the name of a shape
+			- [ ] Allow users to edit the visibility of a shape
+			- [ ] Allow users to edit the velocity of a shape
+			- [ ] Allow users to edit the colour of a shape
+			- [ ] Allow users to edit the scale of a shape (0 to 4)
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
-			- Refactor the project to have all custom .cpp and .h code in main.cpp
-			- Write the full names of all team members at the top of the main.cpp file
-			- If you did not manage to get a specific feature working, please try to
+			- [ ] Refactor the project to have all custom .cpp and .h code in main.cpp
+			- [ ] Write the full names of all team members at the top of the main.cpp file
+			- [ ] If you did not manage to get a specific feature working, please try to
 			explain why you did not manage it and what approaches you took
 	*/
 
 	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
+
 	read_config_file("config.txt", render_window, font, shapes);
 
 	ImGui::SFML::Init(render_window);
@@ -81,12 +85,13 @@ int main()
 		// Clear
 		render_window.clear(sf::Color(0, 0, 0));
 
+		// Input?
+
 		// Update
 		game_loop_update(render_window, shapes);
 
 		// Draw
-		game_loop_draw(render_window, shapes);
-
+		game_loop_draw(render_window, shapes, font);
 
 		// Render
 		ImGui::SFML::Render(render_window);
@@ -159,7 +164,8 @@ void read_config_file_font(sf::Font& font, std::ifstream& file_input)
 
 	if (!font.loadFromFile(font_path))
 	{
-		// error...
+		std::cerr << "Error: Could not load font" << std::endl;
+		exit(1);
 	}
 
 	std::cout << font_path << ", " << font_size << ", " << red_value << ", "
@@ -287,7 +293,6 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 			}
 		}
 
-		// Calculate collisions first
 		shape->set_position(new int[2] {
 			shape->get_position()[0] + (int)shape->get_velocity()[0],
 			shape->get_position()[1] + (int)shape->get_velocity()[1]
@@ -295,7 +300,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 	}
 }
 
-void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
+void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::Font& font)
 {
 	for (auto& shape : shapes)
 	{
@@ -303,15 +308,6 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 		{
 			if (Circle* circle = dynamic_cast<Circle*>(shape))
 			{
-				/*
-					- name (TODO)
-					- visibility (done)
-					- position (done)
-					- velocity (done in update)
-					- colour (done)
-					- scale (done)
-					- radius (done)
-				*/
 				sf::CircleShape sf_circle(
 					(circle->get_radius() * circle->get_scale()[0]),
 					64
@@ -322,21 +318,17 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 					circle->get_colour()[1],
 					circle->get_colour()[2]
 				));
+				sf::Text circle_text(circle->get_name(), font, 24);
+				circle_text.setPosition(
+					sf_circle.getGlobalBounds().getPosition().x + sf_circle.getLocalBounds().width / 4,
+					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
+				);
 
 				window.draw(sf_circle);
+				window.draw(circle_text);
 			}
 			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 			{
-				/*
-					- name (TODO)
-					- visibility (done)
-					- position (done)
-					- velocity (done in update)
-					- colour (done)
-					- scale (done)
-					- width (done)
-					- height (done)
-				*/
 				sf::RectangleShape sf_rectangle(sf::Vector2f(
 					rectangle->get_width() * rectangle->get_scale()[0],
 					rectangle->get_height() * rectangle->get_scale()[1]
@@ -349,8 +341,14 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 					rectangle->get_colour()[1],
 					rectangle->get_colour()[2]
 				));
+				sf::Text rectangle_text(rectangle->get_name(), font, 24);
+				rectangle_text.setPosition(
+					sf_rectangle.getGlobalBounds().getPosition().x + sf_rectangle.getLocalBounds().width / 4,
+					sf_rectangle.getGlobalBounds().getPosition().y + sf_rectangle.getLocalBounds().height / 4
+				);
 
 				window.draw(sf_rectangle);
+				window.draw(rectangle_text);
 			}
 		}
 	}
