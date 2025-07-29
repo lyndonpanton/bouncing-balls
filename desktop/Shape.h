@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef SHAPE
 #define SHAPE
 
@@ -8,31 +10,33 @@ class Shape
 {
 	std::string m_name;
 	bool m_is_visible = true;
-	int m_position;
-	float m_velocity;
-	float m_colour;
-	float m_scale[2];
+	int* m_position;
+	float* m_velocity;
+	int* m_colour;
+	float* m_scale;
 
 public:
 	// General
-	//Shape();
-	//Shape(Shape&);
-	//Shape(std::string, int[], float[], float[], float[]);
-	//~Shape();
+	Shape();
+	Shape(const Shape&);
+	Shape(std::string, int[], float[], int[], float[]);
+	~Shape();
 
-	//// Getters
-	//bool get_visibility() const;
-	//int* get_position() const;
-	//float* get_velocity() const;
-	//float* get_colour() const;
-	//float* get_scale() const;
+	// Getters
+	std::string get_name() const;
+	bool get_visibility() const;
+	int* get_position() const;
+	float* get_velocity() const;
+	int* get_colour() const;
+	float* get_scale() const;
 
-	//// Setters
-	//void set_visibility(bool);
-	//void set_position(int[]);
-	//void set_velocity(float[]);
-	//void set_colour(float[]);
-	//void set_scale();
+	// Setters
+	void set_name(std::string);
+	void set_visibility(bool);
+	void set_position(int*);
+	void set_velocity(float*);
+	void set_colour(int*);
+	void set_scale(float*);
 };
 
 #endif

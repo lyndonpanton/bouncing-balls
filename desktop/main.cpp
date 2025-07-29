@@ -3,6 +3,8 @@
 #include "SFML/Graphics.hpp"
 
 #include "Shape.h"
+#include "Circle.h"
+#include "Rectangle.h"
 
 #include <iostream>
 #include <fstream>
@@ -24,7 +26,11 @@ int main()
 	sf::Font font;
 	read_config_file("config.txt", render_window, font, shapes);
 
-	//sf::RenderWindow render_window(sf::VideoMode(1080, 720), "Bouncing Balls");
+	for (const auto& shape: shapes)
+	{
+		std::cout << shape.get_name() << std::endl;
+	}
+
 	ImGui::SFML::Init(render_window);
 	sf::Clock delta_clock;
 
@@ -69,8 +75,6 @@ void read_config_file(
 
 	while (file_input >> line_type)
 	{
-		std::cout << line_type << ": ";
-
 		if (line_type == "Window")
 		{
 			read_config_file_window(render_window, file_input);
@@ -110,22 +114,26 @@ void read_config_file_window(
 
 void read_config_file_font(sf::Font& font, std::ifstream& file_input)
 {
-	std::string font_type;
+	std::string font_path;
 	int font_size;
 	int red_value;
 	int green_value;
 	int blue_value;
 
-	file_input >> font_type >> font_size >> red_value >> green_value
+	file_input >> font_path >> font_size >> red_value >> green_value
 		>> blue_value;
 
-	std::cout << font_type << ", " << font_size << ", " << red_value << ", "
+	if (!font.loadFromFile(font_path))
+	{
+		// error...
+	}
+
+	std::cout << font_path << ", " << font_size << ", " << red_value << ", "
 		<< green_value << ", " << blue_value << std::endl;
 }
 
 void read_config_file_circle(std::vector<Shape>& shapes, std::ifstream& file_input)
 {
-	// Circle CGreen 100 100 -3 2 0 255 0 50
 	std::string circle_colour;
 	int circle_position_x;
 	int circle_position_y;
@@ -141,16 +149,18 @@ void read_config_file_circle(std::vector<Shape>& shapes, std::ifstream& file_inp
 		>> circle_red_value >> circle_green_value >> circle_blue_value
 		>> circle_radius;
 
-	std::cout << circle_colour << ", " << circle_position_x << ", "
-		<< circle_position_y << ", " << circle_velocity_x << ", "
-		<< circle_velocity_y << ", " << circle_red_value << ", "
-		<< circle_green_value << ", " << circle_blue_value << ", "
-		<< circle_radius << std::endl;
+	shapes.push_back(Circle(
+		circle_colour,
+		new int[2] { circle_position_x, circle_position_y },
+		new float[2] { circle_velocity_x, circle_velocity_y },
+		new int[3] { circle_red_value, circle_green_value, circle_blue_value },
+		new float[2] { 1.0f, 1.0f },
+		circle_radius
+	));
 }
 
 void read_config_file_rectangle(std::vector<Shape>& shapes, std::ifstream& file_input)
 {
-	// Rectangle RGrey 300 250 -2 2 100 100 100 50 100
 	std::string rectangle_colour;
 	int rectangle_position_x;
 	int rectangle_position_y;
@@ -168,9 +178,12 @@ void read_config_file_rectangle(std::vector<Shape>& shapes, std::ifstream& file_
 		>> rectangle_green_value >> rectangle_blue_value
 		>> rectangle_width >> rectangle_height;
 
-	std::cout << rectangle_colour << ", " << rectangle_position_x << ", "
-		<< rectangle_position_y << ", " << rectangle_velocity_x << ", "
-		<< rectangle_velocity_y << ", " << rectangle_red_value << ", "
-		<< rectangle_green_value << ", " << rectangle_blue_value << ", "
-		<< rectangle_width << ", " << rectangle_height << std::endl;
+	shapes.push_back(Rectangle(
+		rectangle_colour,
+		new int[2] { rectangle_position_x, rectangle_position_y },
+		new float[2] { rectangle_velocity_x, rectangle_velocity_y },
+		new int[3] { rectangle_red_value, rectangle_green_value, rectangle_blue_value },
+		new float[2] { 1.0f, 1.0f },
+		rectangle_width, rectangle_height
+	));
 }
