@@ -1,2 +1,6 @@
 ﻿  main.cpp
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(243,38): warning C4311: 'type cast': pointer truncation from 'float *' to 'int'
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(243,38): warning C4302: 'type cast': truncation from 'float *' to 'int'
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(246,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(246,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   desktop.vcxproj -> C:\dev\projects\game-development\bouncing-balls\desktop\x64\Debug\desktop.exe

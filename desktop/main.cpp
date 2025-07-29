@@ -11,25 +11,27 @@
 
 void read_config_file(
 	std::string, sf::RenderWindow&,
-	sf::Font&, std::vector<Shape>&
+	sf::Font&, std::vector<Shape*>&
 );
 void read_config_file_window(sf::RenderWindow&, std::ifstream&);
 void read_config_file_font(sf::Font&, std::ifstream&);
-void read_config_file_circle(std::vector<Shape>&, std::ifstream&);
-void read_config_file_rectangle(std::vector<Shape>&, std::ifstream&);
+void read_config_file_circle(std::vector<Shape*>&, std::ifstream&);
+void read_config_file_rectangle(std::vector<Shape*>&, std::ifstream&);
 
-void game_loop_update(std::vector<Shape>&);
-void game_loop_draw(sf::RenderWindow& window, std::vector<Shape>&);
+void game_loop_update(std::vector<Shape*>&);
+void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&);
 
 int main()
 {
-	std::vector<Shape> shapes;
+	// Add point count to Circle class
+	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
 	read_config_file("config.txt", render_window, font, shapes);
 
 	ImGui::SFML::Init(render_window);
 	sf::Clock delta_clock;
+	render_window.setFramerateLimit(60);
 
 	while (render_window.isOpen())
 	{
@@ -59,6 +61,7 @@ int main()
 		// Draw
 		game_loop_draw(render_window, shapes);
 
+
 		// Render
 		ImGui::SFML::Render(render_window);
 		render_window.display();
@@ -71,7 +74,7 @@ int main()
 
 void read_config_file(
 	std::string filepath, sf::RenderWindow& render_window,
-	sf::Font& font, std::vector<Shape>& shapes
+	sf::Font& font, std::vector<Shape*>& shapes
 )
 {
 	std::ifstream file_input(filepath);
@@ -137,7 +140,7 @@ void read_config_file_font(sf::Font& font, std::ifstream& file_input)
 		<< green_value << ", " << blue_value << std::endl;
 }
 
-void read_config_file_circle(std::vector<Shape>& shapes, std::ifstream& file_input)
+void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_input)
 {
 	std::string circle_colour;
 	int circle_position_x;
@@ -154,17 +157,19 @@ void read_config_file_circle(std::vector<Shape>& shapes, std::ifstream& file_inp
 		>> circle_red_value >> circle_green_value >> circle_blue_value
 		>> circle_radius;
 
-	shapes.push_back(Circle(
+	Circle* circle = new Circle(
 		circle_colour,
 		new int[2] { circle_position_x, circle_position_y },
 		new float[2] { circle_velocity_x, circle_velocity_y },
 		new int[3] { circle_red_value, circle_green_value, circle_blue_value },
 		new float[2] { 1.0f, 1.0f },
 		circle_radius
-	));
+	);
+
+	shapes.push_back(circle);
 }
 
-void read_config_file_rectangle(std::vector<Shape>& shapes, std::ifstream& file_input)
+void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file_input)
 {
 	std::string rectangle_colour;
 	int rectangle_position_x;
@@ -183,33 +188,76 @@ void read_config_file_rectangle(std::vector<Shape>& shapes, std::ifstream& file_
 		>> rectangle_green_value >> rectangle_blue_value
 		>> rectangle_width >> rectangle_height;
 
-	shapes.push_back(Rectangle(
+
+	Rectangle* rectangle = new Rectangle(
 		rectangle_colour,
 		new int[2] { rectangle_position_x, rectangle_position_y },
 		new float[2] { rectangle_velocity_x, rectangle_velocity_y },
 		new int[3] { rectangle_red_value, rectangle_green_value, rectangle_blue_value },
 		new float[2] { 1.0f, 1.0f },
-		rectangle_width, rectangle_height
-	));
+		rectangle_width,
+		rectangle_height
+	);
+
+	shapes.push_back(rectangle);
 }
 
-void game_loop_update(std::vector<Shape>& shapes)
+void game_loop_update(std::vector<Shape*>& shapes)
 {
 	for (auto& shape : shapes)
 	{
-		// Get for collisions...
-
-		shape.set_position(new int[2] {
-			shape.get_position()[0] + (int) shape.get_velocity()[0],
-			shape.get_position()[1] + (int) shape.get_velocity()[1],
+		// Calculate collisions first
+		shape->set_position(new int[2] {
+			shape->get_position()[0] + (int)shape->get_velocity()[0],
+			shape->get_position()[1] + (int)shape->get_velocity()[1]
 		});
+
+		if (Circle* circle = dynamic_cast<Circle*>(shape))
+		{
+		} 
+		else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
+		{
+
+		}
 	}
 }
 
-void game_loop_draw(sf::RenderWindow& window, std::vector<Shape>& shapes)
+void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 {
-	for (Shape& shape : shapes)
+	for (auto& shape : shapes)
 	{
+		if (shape->get_visibility())
+		{
+			if (Circle* circle = dynamic_cast<Circle*>(shape))
+			{
+				/*
+					- name (TODO)
+					- visibility (done)
+					- position (done)
+					- velocity (done in update)
+					- colour (done)
+					- scale (done incorrectly)
+					- radius (done)
+				*/
+				sf::CircleShape sf_circle(
+					((float) circle->get_radius() * (int) circle->get_scale()),
+					64
+				);
+				sf_circle.setPosition(circle->get_position()[0], circle->get_position()[1]);
+				sf_circle.setFillColor(sf::Color(
+					circle->get_colour()[0],
+					circle->get_colour()[1],
+					circle->get_colour()[2]
+				));
 
+				window.draw(sf_circle);
+				std::cout << "Drawing a circle" << std::endl;
+			}
+			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
+			{
+				// Draw name on shape
+				std::cout << "Drawing a rectangle" << std::endl;
+			}
+		}
 	}
 }
