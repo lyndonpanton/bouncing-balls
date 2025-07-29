@@ -237,7 +237,29 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 	{
 		if (Circle* circle = dynamic_cast<Circle*>(shape))
 		{
+			if (
+				circle->get_position()[0] + circle->get_velocity()[0] <= 0
+				|| circle->get_position()[0] + circle->get_radius() * 2
+				+ circle->get_velocity()[0] >= window_width
+				)
+			{
+				circle->set_velocity(new float[2] {
+					circle->get_velocity()[0] * -1,
+					circle->get_velocity()[1]
+				});
+			}
 
+			if (
+				circle->get_position()[1] + circle->get_velocity()[1] <= 0
+				|| circle->get_position()[1] + circle->get_radius() * 2
+					+ circle->get_velocity()[1] >= window_height
+			)
+			{
+				circle->set_velocity(new float[2] {
+					circle->get_velocity()[0],
+					circle->get_velocity()[1] * -1
+					});
+			}
 		} 
 		else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 		{
@@ -252,7 +274,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 					rectangle->get_velocity()[1]
 				});
 			}
-			else if (
+			if (
 				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
 				|| rectangle->get_position()[1] + rectangle->get_height()
 					+ rectangle->get_velocity()[0] >= window_height
@@ -263,30 +285,6 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 					rectangle->get_velocity()[1] * -1
 				});
 			}
-
-
-			if (
-				rectangle->get_position()[0] + rectangle->get_velocity()[0] <= 0
-				|| (rectangle->get_position()[0] + rectangle->get_width()
-					+ rectangle->get_velocity()[0] >= window_width)
-				)
-			{
-				rectangle->set_velocity(new float[2] {
-					rectangle->get_velocity()[0] * -1,
-						rectangle->get_velocity()[1]
-					});
-			}
-
-			if (
-				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
-				|| rectangle->get_position()[1] + rectangle->get_velocity()[1] >= window_height)
-			{
-				rectangle->set_velocity(new float[2] {
-					rectangle->get_velocity()[0],
-						rectangle->get_velocity()[1] * -1
-					});
-			}
-
 		}
 
 		// Calculate collisions first
