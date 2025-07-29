@@ -1,6 +1,14 @@
 ﻿  main.cpp
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(243,38): warning C4311: 'type cast': pointer truncation from 'float *' to 'int'
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(243,38): warning C4302: 'type cast': truncation from 'float *' to 'int'
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(246,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(246,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(248,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(248,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,63): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,63): warning C4244:         with
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,63): warning C4244:         [
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,63): warning C4244:             T=float
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,63): warning C4244:         ]
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,33): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,33): warning C4244:         with
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,33): warning C4244:         [
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,33): warning C4244:             T=float
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(274,33): warning C4244:         ]
   desktop.vcxproj -> C:\dev\projects\game-development\bouncing-balls\desktop\x64\Debug\desktop.exe

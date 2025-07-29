@@ -24,6 +24,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&);
 int main()
 {
 	// Add point count to Circle class
+	// Circle class only needs one scale component (not an array)
 	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
@@ -56,7 +57,7 @@ int main()
 		render_window.clear(sf::Color(0, 0, 0));
 
 		// Update
-		//game_loop_update(shapes);
+		game_loop_update(shapes);
 
 		// Draw
 		game_loop_draw(render_window, shapes);
@@ -214,6 +215,7 @@ void game_loop_update(std::vector<Shape*>& shapes)
 
 		if (Circle* circle = dynamic_cast<Circle*>(shape))
 		{
+
 		} 
 		else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 		{
@@ -236,11 +238,11 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 					- position (done)
 					- velocity (done in update)
 					- colour (done)
-					- scale (done incorrectly)
+					- scale (done)
 					- radius (done)
 				*/
 				sf::CircleShape sf_circle(
-					((float) circle->get_radius() * (int) circle->get_scale()),
+					(circle->get_radius() * circle->get_scale()[0]),
 					64
 				);
 				sf_circle.setPosition(circle->get_position()[0], circle->get_position()[1]);
@@ -251,12 +253,33 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 				));
 
 				window.draw(sf_circle);
-				std::cout << "Drawing a circle" << std::endl;
 			}
 			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 			{
-				// Draw name on shape
-				std::cout << "Drawing a rectangle" << std::endl;
+				/*
+					- name
+					- visibility (done)
+					- position (done)
+					- velocity (done in update)
+					- colour (done)
+					- scale (done)
+					- width (done)
+					- height (done)
+				*/
+				sf::RectangleShape sf_rectangle(sf::Vector2f(
+					rectangle->get_width() * rectangle->get_scale()[0],
+					rectangle->get_height() * rectangle->get_scale()[1]
+				));
+				sf_rectangle.setPosition(sf::Vector2f(
+					rectangle->get_position()[0], rectangle->get_position()[1]
+				));
+				sf_rectangle.setFillColor(sf::Color(
+					rectangle->get_colour()[0],
+					rectangle->get_colour()[1],
+					rectangle->get_colour()[2]
+				));
+
+				window.draw(sf_rectangle);
 			}
 		}
 	}
