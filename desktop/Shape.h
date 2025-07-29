@@ -20,7 +20,7 @@ public:
 	Shape();
 	Shape(const Shape&);
 	Shape(std::string, int[], float[], int[], float[]);
-	~Shape();
+	virtual ~Shape();
 
 	// Getters
 	std::string get_name() const;

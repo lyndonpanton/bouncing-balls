@@ -13,11 +13,13 @@ void read_config_file(
 	std::string, sf::RenderWindow&,
 	sf::Font&, std::vector<Shape>&
 );
-
 void read_config_file_window(sf::RenderWindow&, std::ifstream&);
 void read_config_file_font(sf::Font&, std::ifstream&);
 void read_config_file_circle(std::vector<Shape>&, std::ifstream&);
 void read_config_file_rectangle(std::vector<Shape>&, std::ifstream&);
+
+void game_loop_update(std::vector<Shape>&);
+void game_loop_draw(sf::RenderWindow& window, std::vector<Shape>&);
 
 int main()
 {
@@ -25,11 +27,6 @@ int main()
 	sf::RenderWindow render_window;
 	sf::Font font;
 	read_config_file("config.txt", render_window, font, shapes);
-
-	for (const auto& shape: shapes)
-	{
-		std::cout << shape.get_name() << std::endl;
-	}
 
 	ImGui::SFML::Init(render_window);
 	sf::Clock delta_clock;
@@ -53,8 +50,16 @@ int main()
 
 		ImGui::End();
 
+		// Clear
 		render_window.clear(sf::Color(0, 0, 0));
 
+		// Update
+		//game_loop_update(shapes);
+
+		// Draw
+		game_loop_draw(render_window, shapes);
+
+		// Render
 		ImGui::SFML::Render(render_window);
 		render_window.display();
 	}
@@ -186,4 +191,25 @@ void read_config_file_rectangle(std::vector<Shape>& shapes, std::ifstream& file_
 		new float[2] { 1.0f, 1.0f },
 		rectangle_width, rectangle_height
 	));
+}
+
+void game_loop_update(std::vector<Shape>& shapes)
+{
+	for (auto& shape : shapes)
+	{
+		// Get for collisions...
+
+		shape.set_position(new int[2] {
+			shape.get_position()[0] + (int) shape.get_velocity()[0],
+			shape.get_position()[1] + (int) shape.get_velocity()[1],
+		});
+	}
+}
+
+void game_loop_draw(sf::RenderWindow& window, std::vector<Shape>& shapes)
+{
+	for (Shape& shape : shapes)
+	{
+
+	}
 }
