@@ -18,13 +18,38 @@ void read_config_file_font(sf::Font&, std::ifstream&);
 void read_config_file_circle(std::vector<Shape*>&, std::ifstream&);
 void read_config_file_rectangle(std::vector<Shape*>&, std::ifstream&);
 
-void game_loop_update(std::vector<Shape*>&);
+void game_loop_update(sf::RenderWindow&, std::vector<Shape*>&);
 void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&);
 
 int main()
 {
-	// Add point count to Circle class
-	// Circle class only needs one scale component (not an array)
+	/*
+		TODO
+
+		- SFML
+			- Shapes should bounce off the bounds of the window
+			- Add point count to Circle class
+			- Circle class only needs one scale component (not an array)
+			- Display the name of shapes in the center of shapes on the screen
+			- You do not have to handle the event where users rapidly change a shape's
+			scale which causes it to go out of the bounds of the window
+
+		- ImGui
+			- Have a list of all shapes (combo box)
+			- Allow users to edit the name of a shape
+			- Allow users to edit the visibility of a shape
+			- Allow users to edit the velocity of a shape
+			- Allow users to edit the colour of a shape
+			- Allow users to edit the scale of a shape (0 to 4)
+
+		- Submission
+			- The only file that needs to be submitted is main.cpp
+			- Refactor the project to have all custom .cpp and .h code in main.cpp
+			- Write the full names of all team members at the top of the main.cpp file
+			- If you did not manage to get a specific feature working, please try to
+			explain why you did not manage it and what approaches you took
+	*/
+
 	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
@@ -57,7 +82,7 @@ int main()
 		render_window.clear(sf::Color(0, 0, 0));
 
 		// Update
-		game_loop_update(shapes);
+		game_loop_update(render_window, shapes);
 
 		// Draw
 		game_loop_draw(render_window, shapes);
@@ -203,24 +228,72 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 	shapes.push_back(rectangle);
 }
 
-void game_loop_update(std::vector<Shape*>& shapes)
+void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 {
+	int window_width = window.getSize().x;
+	int window_height = window.getSize().y;
+
 	for (auto& shape : shapes)
 	{
-		// Calculate collisions first
-		shape->set_position(new int[2] {
-			shape->get_position()[0] + (int)shape->get_velocity()[0],
-			shape->get_position()[1] + (int)shape->get_velocity()[1]
-		});
-
 		if (Circle* circle = dynamic_cast<Circle*>(shape))
 		{
 
 		} 
 		else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 		{
+			if (
+				rectangle->get_position()[0] + rectangle->get_velocity()[0] <= 0
+				|| rectangle->get_position()[0] + rectangle->get_width()
+					+ rectangle->get_velocity()[0] >= window_width
+			)
+			{
+				rectangle->set_velocity(new float[2] {
+					rectangle->get_velocity()[0] * -1,
+					rectangle->get_velocity()[1]
+				});
+			}
+			else if (
+				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
+				|| rectangle->get_position()[1] + rectangle->get_height()
+					+ rectangle->get_velocity()[0] >= window_height
+			)
+			{
+				rectangle->set_velocity(new float[2] {
+					rectangle->get_velocity()[0],
+					rectangle->get_velocity()[1] * -1
+				});
+			}
+
+
+			if (
+				rectangle->get_position()[0] + rectangle->get_velocity()[0] <= 0
+				|| (rectangle->get_position()[0] + rectangle->get_width()
+					+ rectangle->get_velocity()[0] >= window_width)
+				)
+			{
+				rectangle->set_velocity(new float[2] {
+					rectangle->get_velocity()[0] * -1,
+						rectangle->get_velocity()[1]
+					});
+			}
+
+			if (
+				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
+				|| rectangle->get_position()[1] + rectangle->get_velocity()[1] >= window_height)
+			{
+				rectangle->set_velocity(new float[2] {
+					rectangle->get_velocity()[0],
+						rectangle->get_velocity()[1] * -1
+					});
+			}
 
 		}
+
+		// Calculate collisions first
+		shape->set_position(new int[2] {
+			shape->get_position()[0] + (int)shape->get_velocity()[0],
+			shape->get_position()[1] + (int)shape->get_velocity()[1]
+		});
 	}
 }
 
@@ -257,7 +330,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 			{
 				/*
-					- name
+					- name (TODO)
 					- visibility (done)
 					- position (done)
 					- velocity (done in update)
