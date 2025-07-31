@@ -30,9 +30,9 @@ int main()
 
 		- SFML
 			- [x] Shapes should bounce off the bounds of the window
-			- [ ] Add point count to Circle class
-				- [ ] Allow users to modify the point count of a circle?
-			- [ ] Shape class only needs a primitive for the scale (not an
+			- [x] Add point count to Circle class
+				- [x] Allow users to modify the point count of a circle
+			- [x] Shape class only needs a primitive for the scale (not an
 			array)
 			- [ ] Display the name of shapes in the center of shapes on the screen
 				- [x] Display names
@@ -58,7 +58,7 @@ int main()
 		- Maintanence
 			- [ ] * Modify the Shape class to use private member variables whilst
 			interacting with ImGui
-			- [ ] ** Make the Shape class only use a single primitive for the scale,
+			- [x] ** Make the Shape class only use a single primitive for the scale,
 			instead two values
 			- [x] *** Read and store colours as values from 0 to 1, convert them to
 			values from 0 to 255 only when using sfml
@@ -131,8 +131,8 @@ int main()
 		ImGui::Checkbox("Draw Text", &is_selected_text_drawn);
 
 		// Scale
-		float*& shape_scale = shapes.at(shape_index)->m_scale;
-		ImGui::SliderFloat("Scale", shape_scale, 0, 4);
+		float& shape_scale = shapes.at(shape_index)->m_scale;
+		ImGui::SliderFloat("Scale", &shape_scale, 0, 4);
 
 		// Velocity
 		float*& shape_velocity = shapes.at(shape_index)->m_velocity;
@@ -253,7 +253,7 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 	float circle_green_value;
 	float circle_blue_value;
 	int circle_radius;
-	int circle_point_count = 16;
+	int circle_point_count = 32;
 
 	file_input >> circle_name >> circle_position_x
 		>> circle_position_y >> circle_velocity_x >> circle_velocity_y
@@ -265,7 +265,7 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 		new int[2] { circle_position_x, circle_position_y },
 		new float[2] { circle_velocity_x, circle_velocity_y },
 		new float[3] { circle_red_value / 255.0f, circle_green_value / 255.0f, circle_blue_value / 255.0f },
-		new float[2] { 1.0f, 1.0f },
+		1.0f,
 		circle_radius,
 		circle_point_count
 	);
@@ -298,7 +298,7 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 		new int[2] { rectangle_position_x, rectangle_position_y },
 		new float[2] { rectangle_velocity_x, rectangle_velocity_y },
 		new float[3] { rectangle_red_value / 255.0f, rectangle_green_value / 255.0f, rectangle_blue_value / 255.0f },
-		new float[2] { 1.0f, 1.0f },
+		1.0f,
 		rectangle_width,
 		rectangle_height
 	);
@@ -317,7 +317,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 		{
 			if (
 				circle->get_position()[0] + circle->get_velocity()[0] <= 0
-				|| circle->get_position()[0] + (circle->get_radius() * *circle->get_scale() * 2)
+				|| circle->get_position()[0] + (circle->get_radius() * 2 * circle->get_scale())
 					+ circle->get_velocity()[0] >= window_width
 			)
 			{
@@ -329,7 +329,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 
 			if (
 				circle->get_position()[1] + circle->get_velocity()[1] <= 0
-				|| circle->get_position()[1] + circle->get_radius() * *circle->get_scale() * 2
+				|| circle->get_position()[1] + (circle->get_radius() * 2 * circle->get_scale())
 					+ circle->get_velocity()[1] >= window_height
 			)
 			{
@@ -343,7 +343,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 		{
 			if (
 				rectangle->get_position()[0] + rectangle->get_velocity()[0] <= 0
-				|| rectangle->get_position()[0] + (rectangle->get_width() * *rectangle->get_scale())
+				|| rectangle->get_position()[0] + (rectangle->get_width() * rectangle->get_scale())
 					+ rectangle->get_velocity()[0] >= window_width
 			)
 			{
@@ -354,7 +354,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 			}
 			if (
 				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
-				|| rectangle->get_position()[1] + (rectangle->get_height() * *rectangle->get_scale())
+				|| rectangle->get_position()[1] + (rectangle->get_height() * rectangle->get_scale())
 					+ rectangle->get_velocity()[0] >= window_height
 			)
 			{
@@ -381,7 +381,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 			if (Circle* circle = dynamic_cast<Circle*>(shape))
 			{
 				sf::CircleShape sf_circle(
-					(circle->get_radius() * circle->get_scale()[0]),
+					(circle->get_radius() * circle->get_scale()),
 					64
 				);
 				sf_circle.setPosition(circle->get_position()[0], circle->get_position()[1]);
@@ -410,8 +410,8 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 			{
 				sf::RectangleShape sf_rectangle(sf::Vector2f(
-					rectangle->get_width() * rectangle->get_scale()[0],
-					rectangle->get_height() * rectangle->get_scale()[0]
+					rectangle->get_width() * rectangle->get_scale(),
+					rectangle->get_height() * rectangle->get_scale()
 				));
 				sf_rectangle.setPosition(sf::Vector2f(
 					rectangle->get_position()[0], rectangle->get_position()[1]

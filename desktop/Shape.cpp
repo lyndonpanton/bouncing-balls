@@ -6,28 +6,18 @@ Shape::Shape()
 	: m_position(new int[2] { 0, 0 })
 	, m_velocity(new float[2] { 0.0f, 0.0f })
 	, m_colour(new float[3] { 0, 0, 0 })
-	, m_scale(new float[2] { 1.0f, 1.0f })
+	, m_scale(1.0f)
 {
 	char buffer[] = "Shape";
 	c_name = buffer;
 }
 
-//Shape::Shape(std::string name, int position[], float velocity[], float colour[], float scale[])
-//	: m_name(name)
-//	, m_position(new int[2] { position[0], position[1] })
-//	, m_velocity(new float[2] { velocity[0], velocity[1] })
-//	, m_colour(new float[3] { colour[0], colour[1], colour[2] })
-//	, m_scale(new float[2] { scale[0], scale[1] })
-//{
-//
-//}
-
-Shape::Shape(char* name, int position[], float velocity[], float colour[], float scale[])
+Shape::Shape(char* name, int position[], float velocity[], float colour[], float scale)
 	: c_name(name)
 	, m_position(new int[2] { position[0], position[1] })
 	, m_velocity(new float[2] { velocity[0], velocity[1] })
 	, m_colour(new float[3] { colour[0], colour[1], colour[2] })
-	, m_scale(new float[2] { scale[0], scale[1] })
+	, m_scale(1.0f)
 {
 
 }
@@ -94,7 +84,7 @@ float* Shape::get_colour() const
 	return m_colour;
 }
 
-float* Shape::get_scale() const
+float Shape::get_scale() const
 {
 	return m_scale;
 }
@@ -136,7 +126,7 @@ void Shape::set_colour(float* colour)
 	m_colour = colour;
 }
 
-void Shape::set_scale(float* scale)
+void Shape::set_scale(float scale)
 {
 	m_scale = scale;
 }

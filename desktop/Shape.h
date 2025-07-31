@@ -17,12 +17,12 @@ public:
 	bool m_text_is_visible = true;
 	float* m_velocity;
 	float* m_colour;
-	float* m_scale;
+	float m_scale;
 
 	// General
 	Shape();
 	Shape(const Shape&);
-	Shape(char*, int[], float[], float[], float[]);
+	Shape(char*, int[], float[], float[], float);
 	virtual ~Shape();
 
 	// Getters
@@ -33,7 +33,7 @@ public:
 	int* get_position() const;
 	float* get_velocity() const;
 	float* get_colour() const;
-	float* get_scale() const;
+	float get_scale() const;
 
 	// Setters
 	//void set_name(std::string);
@@ -43,7 +43,7 @@ public:
 	void set_position(int*);
 	void set_velocity(float*);
 	void set_colour(float*);
-	void set_scale(float*);
+	void set_scale(float);
 };
 
 #endif

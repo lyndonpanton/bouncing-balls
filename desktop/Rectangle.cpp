@@ -18,7 +18,7 @@ Rectangle::Rectangle(const Rectangle& rectangle)
 }
 
 
-Rectangle::Rectangle(char* name, int position[], float velocity[], float colour[], float scale[], int width, int height)
+Rectangle::Rectangle(char* name, int position[], float velocity[], float colour[], float scale, int width, int height)
 	: Shape(name, position, velocity, colour, scale)
 	, m_width(width)
 	, m_height(height)

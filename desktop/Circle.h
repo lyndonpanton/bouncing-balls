@@ -15,7 +15,7 @@ public:
 	// General
 	Circle();
 	Circle(const Circle&);
-	Circle(char*, int[], float[], float[], float[], int, int);
+	Circle(char*, int[], float[], float[], float, int, int);
 	~Circle();
 
 	// Getters
