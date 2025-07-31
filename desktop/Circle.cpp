@@ -4,6 +4,7 @@
 Circle::Circle()
 	: Shape()
 	, m_radius(50)
+	, m_point_count(32)
 {
 
 }
@@ -15,9 +16,10 @@ Circle::Circle(const Circle& circle)
 }
 
 
-Circle::Circle(char* name, int position[], float velocity[], float colour[], float scale[], int radius)
+Circle::Circle(char* name, int position[], float velocity[], float colour[], float scale[], int radius, int point_count)
 	: Shape(name, position, velocity, colour, scale)
 	, m_radius(radius)
+	, m_point_count(point_count)
 {
 
 }
@@ -35,4 +37,14 @@ int Circle::get_radius() const
 void Circle::set_radius(int radius)
 {
 	m_radius = radius;
+}
+
+int Circle::get_point_count() const
+{
+	return m_point_count;
+}
+
+void Circle::set_segments(int segments)
+{
+	m_point_count = segments;
 }

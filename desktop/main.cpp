@@ -43,14 +43,14 @@ int main()
 		- ImGui
 			- [x] Have a list of all shapes (combo box)
 			- [x] Allow users to edit the visibility of a shape*
-			- [ ] Allow users to edit the visibility of a shape's text
+			- [x] Allow users to edit the visibility of a shape's text
 			- [x] Allow users to edit the name of a shape
 				- [x] Names should change in the sfml ui
 				- [x] Names should change in the imgui dropdown
 			- [x] Allow users to edit the velocity of a shape (-8 to 8)
 			- [x] Allow users to edit the colour of a shape***
 			- [x] Allow users to edit the scale of a shape (0 to 4)**
-			- [ ] Allow users to modify the number of sides of a circle
+			- [x] Allow users to modify the number of points of a circle
 			- [ ] Allow users to reset the properties of a shape
 			- [x] Set the scale of imgui
 				- ImGui::GetStyle().ScaleAllSizes(2.0f);
@@ -63,6 +63,7 @@ int main()
 			- [x] *** Read and store colours as values from 0 to 1, convert them to
 			values from 0 to 255 only when using sfml
 			- [ ] Go over assignment brief code and make sure you have included
+			everything necessary
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
@@ -142,15 +143,14 @@ int main()
 		ImGui::ColorEdit3("Colour", shape_colour);
 
 		// Name
-		/*char buffer[255];
-		ImGui::InputText("Name of shape", buffer, 255);*/
-		/*char buffer[255] = "My shape name";
-		char *buf = new char[255];*/
-
-		//ImGui::InputText(shapes.at(shape_index)->get_name().data(), buffer, 255);
-		//ImGui::InputText(shapes.at(shape_index)->get_name().data(), buffer, 255);
 		ImGui::InputText("Name", shapes.at(shape_index)->get_c_name(), 255);
 		c_shape_names.at(shape_index) = shapes.at(shape_index)->get_c_name();
+
+		if (Circle* circle = dynamic_cast<Circle*>(shapes.at(shape_index)))
+		{
+			int& circle_segments = circle->m_point_count;
+			ImGui::SliderInt("Segments", &circle_segments, 3, 64);
+		}
 
 		ImGui::End();
 
@@ -253,6 +253,7 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 	float circle_green_value;
 	float circle_blue_value;
 	int circle_radius;
+	int circle_point_count = 16;
 
 	file_input >> circle_name >> circle_position_x
 		>> circle_position_y >> circle_velocity_x >> circle_velocity_y
@@ -265,7 +266,8 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 		new float[2] { circle_velocity_x, circle_velocity_y },
 		new float[3] { circle_red_value / 255.0f, circle_green_value / 255.0f, circle_blue_value / 255.0f },
 		new float[2] { 1.0f, 1.0f },
-		circle_radius
+		circle_radius,
+		circle_point_count
 	);
 
 	shapes.push_back(circle);
@@ -393,6 +395,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					sf_circle.getGlobalBounds().getPosition().x + sf_circle.getLocalBounds().width / 4,
 					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
 				);
+				sf_circle.setPointCount(circle->get_point_count());
 
 				if (circle->get_shape_visibility())
 				{
