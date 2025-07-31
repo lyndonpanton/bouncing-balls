@@ -14,7 +14,7 @@ public:
 	// General
 	Rectangle();
 	Rectangle(const Rectangle&);
-	Rectangle(std::string, int[], float[], int[], float[], int, int);
+	Rectangle(std::string, int[], float[], float[], float[], int, int);
 	~Rectangle();
 
 	// Getters

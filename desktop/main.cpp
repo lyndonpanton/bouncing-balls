@@ -31,7 +31,8 @@ int main()
 		- SFML
 			- [x] Shapes should bounce off the bounds of the window
 			- [ ] Add point count to Circle class
-			- [ ] Circle class only needs a primitive for the scale (not an
+				- [ ] Allow users to modify the point count of a circle?
+			- [ ] Shape class only needs a primitive for the scale (not an
 			array)
 			- [ ] Display the name of shapes in the center of shapes on the screen
 				- [x] Display names
@@ -43,13 +44,15 @@ int main()
 			- [x] Have a list of all shapes (combo box)
 			- [x] Allow users to edit the visibility of a shape*
 			- [ ] Allow users to edit the name of a shape
-			- [ ] Allow users to edit the velocity of a shape (-8 to 8)
-			- [ ] Allow users to edit the colour of a shape
+			- [x] Allow users to edit the velocity of a shape (-8 to 8)
+			- [ ] Allow users to edit the colour of a shape***
 			- [x] Allow users to edit the scale of a shape (0 to 4)**
-			- [ ] *Try to modify the Shape class to use private member variables whilst
+			- [ ] * Modify the Shape class to use private member variables whilst
 			interacting with ImGui
-			- [ ] \** Make the Shape class only use a single primitive for the scale,
+			- [ ] ** Make the Shape class only use a single primitive for the scale,
 			instead two values
+			- [ ] *** Read and store colours as values from 0 to 1, convert them to
+			values from 0 to 255 only when using sfml
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
@@ -62,9 +65,6 @@ int main()
 	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
-
-	// const char* items[] = {"AAAA", "BBBB", "CCCC", "DDDD"};
-	// static int item_index = 0;
 
 	read_config_file("config.txt", render_window, font, shapes);
 
@@ -119,15 +119,17 @@ int main()
 		ImGui::SliderFloat2("Velocity", shape_velocity, -8, 8);
 
 		// Colour
+		float* shape_colour = shapes.at(shape_index)->m_colour;
+		ImGui::ColorEdit3("Colour", shape_colour);
 
 		// Name
+		/*char buffer[255];
+		ImGui::InputText("Name of shape", buffer, 255);*/
 
 		ImGui::End();
 
 		// Clear
 		render_window.clear(sf::Color(0, 0, 0));
-
-		// Input?
 
 		// Update
 		game_loop_update(render_window, shapes);
@@ -221,9 +223,9 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 	int circle_position_y;
 	float circle_velocity_x;
 	float circle_velocity_y;
-	int circle_red_value;
-	int circle_green_value;
-	int circle_blue_value;
+	float circle_red_value;
+	float circle_green_value;
+	float circle_blue_value;
 	int circle_radius;
 
 	file_input >> circle_colour >> circle_position_x
@@ -235,7 +237,7 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 		circle_colour,
 		new int[2] { circle_position_x, circle_position_y },
 		new float[2] { circle_velocity_x, circle_velocity_y },
-		new int[3] { circle_red_value, circle_green_value, circle_blue_value },
+		new float[3] { circle_red_value / 255.0f, circle_green_value / 255.0f, circle_blue_value / 255.0f },
 		new float[2] { 1.0f, 1.0f },
 		circle_radius
 	);
@@ -250,9 +252,9 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 	int rectangle_position_y;
 	float rectangle_velocity_x;
 	float rectangle_velocity_y;
-	int rectangle_red_value;
-	int rectangle_green_value;
-	int rectangle_blue_value;
+	float rectangle_red_value;
+	float rectangle_green_value;
+	float rectangle_blue_value;
 	int rectangle_width;
 	int rectangle_height;
 
@@ -267,7 +269,7 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 		rectangle_colour,
 		new int[2] { rectangle_position_x, rectangle_position_y },
 		new float[2] { rectangle_velocity_x, rectangle_velocity_y },
-		new int[3] { rectangle_red_value, rectangle_green_value, rectangle_blue_value },
+		new float[3] { rectangle_red_value / 255.0f, rectangle_green_value / 255.0f, rectangle_blue_value / 255.0f },
 		new float[2] { 1.0f, 1.0f },
 		rectangle_width,
 		rectangle_height
@@ -356,9 +358,9 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 				);
 				sf_circle.setPosition(circle->get_position()[0], circle->get_position()[1]);
 				sf_circle.setFillColor(sf::Color(
-					circle->get_colour()[0],
-					circle->get_colour()[1],
-					circle->get_colour()[2]
+					(int) (circle->get_colour()[0] * 255),
+					(int) (circle->get_colour()[1] * 255),
+					(int) (circle->get_colour()[2] * 255)
 				));
 				sf::Text circle_text(circle->get_name(), font, 24);
 				circle_text.setPosition(
@@ -382,9 +384,9 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					rectangle->get_position()[0], rectangle->get_position()[1]
 				));
 				sf_rectangle.setFillColor(sf::Color(
-					rectangle->get_colour()[0],
-					rectangle->get_colour()[1],
-					rectangle->get_colour()[2]
+					(int) (rectangle->get_colour()[0] * 255),
+					(int) (rectangle->get_colour()[1] * 255),
+					(int) (rectangle->get_colour()[2] * 255)
 				));
 				sf::Text rectangle_text(rectangle->get_name(), font, 24);
 				rectangle_text.setPosition(

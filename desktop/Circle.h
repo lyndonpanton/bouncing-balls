@@ -13,7 +13,7 @@ public:
 	// General
 	Circle();
 	Circle(const Circle&);
-	Circle(std::string, int[], float[], int[], float[], int);
+	Circle(std::string, int[], float[], float[], float[], int);
 	~Circle();
 
 	// Getters

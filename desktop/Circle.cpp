@@ -15,7 +15,7 @@ Circle::Circle(const Circle& circle)
 }
 
 
-Circle::Circle(std::string name, int position[], float velocity[], int colour[], float scale[], int radius)
+Circle::Circle(std::string name, int position[], float velocity[], float colour[], float scale[], int radius)
 	: Shape(name, position, velocity, colour, scale)
 	, m_radius(radius)
 {

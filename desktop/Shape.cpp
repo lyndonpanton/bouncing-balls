@@ -6,17 +6,17 @@ Shape::Shape()
 	: m_name("Shape")
 	, m_position(new int[2] { 0, 0 })
 	, m_velocity(new float[2] { 0.0f, 0.0f })
-	, m_colour(new int[3] { 0, 0, 0 })
+	, m_colour(new float[3] { 0, 0, 0 })
 	, m_scale(new float[2] { 1.0f, 1.0f })
 {
 
 }
 
-Shape::Shape(std::string name, int position[], float velocity[], int colour[], float scale[])
+Shape::Shape(std::string name, int position[], float velocity[], float colour[], float scale[])
 	: m_name(name)
 	, m_position(new int[2] { position[0], position[1] })
 	, m_velocity(new float[2] { velocity[0], velocity[1] })
-	, m_colour(new int[3] { colour[0], colour[1], colour[2] })
+	, m_colour(new float[3] { colour[0], colour[1], colour[2] })
 	, m_scale(new float[2] { scale[0], scale[1] })
 {
 
@@ -59,7 +59,7 @@ float* Shape::get_velocity() const
 	return m_velocity;
 }
 
-int* Shape::get_colour() const
+float* Shape::get_colour() const
 {
 	return m_colour;
 }
@@ -91,7 +91,7 @@ void Shape::set_velocity(float* velocity)
 	m_velocity = velocity;
 }
 
-void Shape::set_colour(int* colour)
+void Shape::set_colour(float* colour)
 {
 	m_colour = colour;
 }
