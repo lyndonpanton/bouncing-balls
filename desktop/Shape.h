@@ -8,14 +8,14 @@
 
 class Shape
 {
-	std::string m_name;
 	int* m_position;
+
+public:
+	std::string m_name;
+	bool m_is_visible = true;
 	float* m_velocity;
 	int* m_colour;
 	float* m_scale;
-
-public:
-	bool m_is_visible = true;
 
 	// General
 	Shape();

@@ -41,11 +41,15 @@ int main()
 
 		- ImGui
 			- [x] Have a list of all shapes (combo box)
-			- [ ] Allow users to edit the visibility of a shape (had to make visibility property public)
+			- [x] Allow users to edit the visibility of a shape*
 			- [ ] Allow users to edit the name of a shape
-			- [ ] Allow users to edit the velocity of a shape
+			- [ ] Allow users to edit the velocity of a shape (-8 to 8)
 			- [ ] Allow users to edit the colour of a shape
-			- [ ] Allow users to edit the scale of a shape (0 to 4)
+			- [x] Allow users to edit the scale of a shape (0 to 4)**
+			- [ ] *Try to modify the Shape class to use private member variables whilst
+			interacting with ImGui
+			- [ ] \** Make the Shape class only use a single primitive for the scale,
+			instead two values
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
@@ -99,10 +103,31 @@ int main()
 
 		ImGui::Begin("Edit Shapes");
 
+		// Selected shape
 		ImGui::Combo("Shapes", &shape_index, c_shape_names.data(), (int) c_shape_names.size());
 
+		// Visibility
 		bool& is_selected_shape_drawn = shapes.at(shape_index)->m_is_visible;
 		ImGui::Checkbox("Draw Shape", &is_selected_shape_drawn);
+
+		// Scale
+		float*& shape_scale = shapes.at(shape_index)->m_scale;
+		ImGui::SliderFloat("Scale", shape_scale, 0, 4);
+		//if (Circle* circle = dynamic_cast<Circle*>(shapes.at(shape_index)))
+		//{
+		//	circle->set_radius(circle->get_radius() * *shape_scale);
+		//}
+		//else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shapes.at(shape_index)))
+		//{
+		//	rectangle->set_width(rectangle->get_width() * *shape_scale);
+		//	rectangle->set_height(rectangle->get_height() * *shape_scale);
+		//}
+
+		// Velocity
+
+		// Colour
+
+		// Name
 
 		ImGui::End();
 
@@ -269,9 +294,9 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 		{
 			if (
 				circle->get_position()[0] + circle->get_velocity()[0] <= 0
-				|| circle->get_position()[0] + circle->get_radius() * 2
-				+ circle->get_velocity()[0] >= window_width
-				)
+				|| circle->get_position()[0] + (circle->get_radius() * *circle->get_scale() * 2)
+					+ circle->get_velocity()[0] >= window_width
+			)
 			{
 				circle->set_velocity(new float[2] {
 					circle->get_velocity()[0] * -1,
@@ -281,21 +306,21 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 
 			if (
 				circle->get_position()[1] + circle->get_velocity()[1] <= 0
-				|| circle->get_position()[1] + circle->get_radius() * 2
+				|| circle->get_position()[1] + circle->get_radius() * *circle->get_scale() * 2
 					+ circle->get_velocity()[1] >= window_height
 			)
 			{
 				circle->set_velocity(new float[2] {
 					circle->get_velocity()[0],
 					circle->get_velocity()[1] * -1
-					});
+				});
 			}
 		} 
 		else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 		{
 			if (
 				rectangle->get_position()[0] + rectangle->get_velocity()[0] <= 0
-				|| rectangle->get_position()[0] + rectangle->get_width()
+				|| rectangle->get_position()[0] + (rectangle->get_width() * *rectangle->get_scale())
 					+ rectangle->get_velocity()[0] >= window_width
 			)
 			{
@@ -306,7 +331,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 			}
 			if (
 				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
-				|| rectangle->get_position()[1] + rectangle->get_height()
+				|| rectangle->get_position()[1] + (rectangle->get_height() * *rectangle->get_scale())
 					+ rectangle->get_velocity()[0] >= window_height
 			)
 			{
@@ -358,7 +383,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 			{
 				sf::RectangleShape sf_rectangle(sf::Vector2f(
 					rectangle->get_width() * rectangle->get_scale()[0],
-					rectangle->get_height() * rectangle->get_scale()[1]
+					rectangle->get_height() * rectangle->get_scale()[0]
 				));
 				sf_rectangle.setPosition(sf::Vector2f(
 					rectangle->get_position()[0], rectangle->get_position()[1]
