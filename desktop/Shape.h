@@ -9,13 +9,14 @@
 class Shape
 {
 	std::string m_name;
-	bool m_is_visible = true;
 	int* m_position;
 	float* m_velocity;
 	int* m_colour;
 	float* m_scale;
 
 public:
+	bool m_is_visible = true;
+
 	// General
 	Shape();
 	Shape(const Shape&);

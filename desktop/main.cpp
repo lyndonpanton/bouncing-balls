@@ -40,9 +40,9 @@ int main()
 			scale which causes it to go out of the bounds of the window
 
 		- ImGui
-			- [ ] Have a list of all shapes (combo box)
+			- [x] Have a list of all shapes (combo box)
+			- [ ] Allow users to edit the visibility of a shape (had to make visibility property public)
 			- [ ] Allow users to edit the name of a shape
-			- [ ] Allow users to edit the visibility of a shape
 			- [ ] Allow users to edit the velocity of a shape
 			- [ ] Allow users to edit the colour of a shape
 			- [ ] Allow users to edit the scale of a shape (0 to 4)
@@ -64,18 +64,18 @@ int main()
 
 	read_config_file("config.txt", render_window, font, shapes);
 
-	std::vector<std::string> v_shape_names;
+	std::vector<std::string> s_shape_names;
 
 	for (auto const& shape : shapes)
 	{
-		v_shape_names.push_back(shape->get_name());
+		s_shape_names.push_back(shape->get_name());
 	}
 
-	std::vector<const char*> shape_names;
+	std::vector<const char*> c_shape_names;
 
-	for (auto const& shape_name : v_shape_names)
+	for (auto const& shape_name : s_shape_names)
 	{
-		shape_names.push_back(shape_name.data());
+		c_shape_names.push_back(shape_name.data());
 	}
 
 	int shape_index = 0;
@@ -99,7 +99,10 @@ int main()
 
 		ImGui::Begin("Edit Shapes");
 
-		ImGui::Combo("Shapes", &shape_index, shape_names.data(), (int) shape_names.size());
+		ImGui::Combo("Shapes", &shape_index, c_shape_names.data(), (int) c_shape_names.size());
+
+		bool& is_selected_shape_drawn = shapes.at(shape_index)->m_is_visible;
+		ImGui::Checkbox("Draw Shape", &is_selected_shape_drawn);
 
 		ImGui::End();
 
@@ -345,8 +348,11 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
 				);
 
-				window.draw(sf_circle);
-				window.draw(circle_text);
+				if (circle->get_visibility())
+				{
+					window.draw(sf_circle);
+					window.draw(circle_text);
+				}
 			}
 			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 			{
@@ -368,8 +374,11 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					sf_rectangle.getGlobalBounds().getPosition().y + sf_rectangle.getLocalBounds().height / 4
 				);
 
-				window.draw(sf_rectangle);
-				window.draw(rectangle_text);
+				if (rectangle->get_visibility())
+				{
+					window.draw(sf_rectangle);
+					window.draw(rectangle_text);
+				}
 			}
 		}
 	}
