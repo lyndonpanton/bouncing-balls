@@ -9,13 +9,13 @@ Circle::Circle()
 }
 
 Circle::Circle(const Circle& circle)
-	: Shape(circle.get_name(), circle.get_position(), circle.get_velocity(), circle.get_colour(), circle.get_scale())
+	: Shape(circle.get_c_name(), circle.get_position(), circle.get_velocity(), circle.get_colour(), circle.get_scale())
 	, m_radius(circle.get_radius())
 {
 }
 
 
-Circle::Circle(std::string name, int position[], float velocity[], float colour[], float scale[], int radius)
+Circle::Circle(char* name, int position[], float velocity[], float colour[], float scale[], int radius)
 	: Shape(name, position, velocity, colour, scale)
 	, m_radius(radius)
 {

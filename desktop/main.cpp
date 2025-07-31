@@ -43,19 +43,29 @@ int main()
 		- ImGui
 			- [x] Have a list of all shapes (combo box)
 			- [x] Allow users to edit the visibility of a shape*
-			- [ ] Allow users to edit the name of a shape
+			- [ ] Allow users to edit the visibility of a shape's text
+			- [x] Allow users to edit the name of a shape
+				- [x] Names should change in the sfml ui
+				- [x] Names should change in the imgui dropdown
 			- [x] Allow users to edit the velocity of a shape (-8 to 8)
-			- [ ] Allow users to edit the colour of a shape***
+			- [x] Allow users to edit the colour of a shape***
 			- [x] Allow users to edit the scale of a shape (0 to 4)**
+			- [ ] Allow users to modify the number of sides of a circle
+			- [ ] Allow users to reset the properties of a shape
+			- [ ] Set the scale of imgui
+				- ImGui::GetStyle().ScaleAllSizes(2.0f);
+				- ImGui::GetIO().FontGlobalScale = 2.0f;
 			- [ ] * Modify the Shape class to use private member variables whilst
 			interacting with ImGui
 			- [ ] ** Make the Shape class only use a single primitive for the scale,
 			instead two values
-			- [ ] *** Read and store colours as values from 0 to 1, convert them to
+			- [x] *** Read and store colours as values from 0 to 1, convert them to
 			values from 0 to 255 only when using sfml
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
+			- [ ] Go over assignment brief code and make sure you have included
+			everything necessary
 			- [ ] Refactor the project to have all custom .cpp and .h code in main.cpp
 			- [ ] Write the full names of all team members at the top of the main.cpp file
 			- [ ] If you did not manage to get a specific feature working, please try to
@@ -72,7 +82,7 @@ int main()
 
 	for (auto const& shape : shapes)
 	{
-		s_shape_names.push_back(shape->get_name());
+		s_shape_names.push_back(shape->get_c_name());
 	}
 
 	std::vector<const char*> c_shape_names;
@@ -125,6 +135,13 @@ int main()
 		// Name
 		/*char buffer[255];
 		ImGui::InputText("Name of shape", buffer, 255);*/
+		/*char buffer[255] = "My shape name";
+		char *buf = new char[255];*/
+
+		//ImGui::InputText(shapes.at(shape_index)->get_name().data(), buffer, 255);
+		//ImGui::InputText(shapes.at(shape_index)->get_name().data(), buffer, 255);
+		ImGui::InputText("Name", shapes.at(shape_index)->get_c_name(), 255);
+		c_shape_names.at(shape_index) = shapes.at(shape_index)->get_c_name();
 
 		ImGui::End();
 
@@ -218,7 +235,7 @@ void read_config_file_font(sf::Font& font, std::ifstream& file_input)
 
 void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_input)
 {
-	std::string circle_colour;
+	char* circle_name = new char[255];
 	int circle_position_x;
 	int circle_position_y;
 	float circle_velocity_x;
@@ -228,13 +245,13 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 	float circle_blue_value;
 	int circle_radius;
 
-	file_input >> circle_colour >> circle_position_x
+	file_input >> circle_name >> circle_position_x
 		>> circle_position_y >> circle_velocity_x >> circle_velocity_y
 		>> circle_red_value >> circle_green_value >> circle_blue_value
 		>> circle_radius;
 
 	Circle* circle = new Circle(
-		circle_colour,
+		circle_name,
 		new int[2] { circle_position_x, circle_position_y },
 		new float[2] { circle_velocity_x, circle_velocity_y },
 		new float[3] { circle_red_value / 255.0f, circle_green_value / 255.0f, circle_blue_value / 255.0f },
@@ -247,7 +264,7 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 
 void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file_input)
 {
-	std::string rectangle_colour;
+	char* rectangle_name = new char[255];
 	int rectangle_position_x;
 	int rectangle_position_y;
 	float rectangle_velocity_x;
@@ -258,7 +275,7 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 	int rectangle_width;
 	int rectangle_height;
 
-	file_input >> rectangle_colour >> rectangle_position_x
+	file_input >> rectangle_name >> rectangle_position_x
 		>> rectangle_position_y >> rectangle_velocity_x
 		>> rectangle_velocity_y >> rectangle_red_value
 		>> rectangle_green_value >> rectangle_blue_value
@@ -266,7 +283,7 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 
 
 	Rectangle* rectangle = new Rectangle(
-		rectangle_colour,
+		rectangle_name,
 		new int[2] { rectangle_position_x, rectangle_position_y },
 		new float[2] { rectangle_velocity_x, rectangle_velocity_y },
 		new float[3] { rectangle_red_value / 255.0f, rectangle_green_value / 255.0f, rectangle_blue_value / 255.0f },
@@ -362,7 +379,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					(int) (circle->get_colour()[1] * 255),
 					(int) (circle->get_colour()[2] * 255)
 				));
-				sf::Text circle_text(circle->get_name(), font, 24);
+				sf::Text circle_text(circle->get_c_name(), font, 24);
 				circle_text.setPosition(
 					sf_circle.getGlobalBounds().getPosition().x + sf_circle.getLocalBounds().width / 4,
 					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
@@ -388,7 +405,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					(int) (rectangle->get_colour()[1] * 255),
 					(int) (rectangle->get_colour()[2] * 255)
 				));
-				sf::Text rectangle_text(rectangle->get_name(), font, 24);
+				sf::Text rectangle_text(rectangle->get_c_name(), font, 24);
 				rectangle_text.setPosition(
 					sf_rectangle.getGlobalBounds().getPosition().x + sf_rectangle.getLocalBounds().width / 4,
 					sf_rectangle.getGlobalBounds().getPosition().y + sf_rectangle.getLocalBounds().height / 4

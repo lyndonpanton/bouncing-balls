@@ -10,7 +10,7 @@ Rectangle::Rectangle()
 }
 
 Rectangle::Rectangle(const Rectangle& rectangle)
-	: Shape(rectangle.get_name(), rectangle.get_position(), rectangle.get_velocity(), rectangle.get_colour(), rectangle.get_scale())
+	: Shape(rectangle.get_c_name(), rectangle.get_position(), rectangle.get_velocity(), rectangle.get_colour(), rectangle.get_scale())
 	, m_width(rectangle.get_width())
 	, m_height(rectangle.get_height())
 {
@@ -18,7 +18,7 @@ Rectangle::Rectangle(const Rectangle& rectangle)
 }
 
 
-Rectangle::Rectangle(std::string name, int position[], float velocity[], float colour[], float scale[], int width, int height)
+Rectangle::Rectangle(char* name, int position[], float velocity[], float colour[], float scale[], int width, int height)
 	: Shape(name, position, velocity, colour, scale)
 	, m_width(width)
 	, m_height(height)

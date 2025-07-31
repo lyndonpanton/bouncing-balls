@@ -11,7 +11,8 @@ class Shape
 	int* m_position;
 
 public:
-	std::string m_name;
+	//std::string m_name;
+	char* c_name;
 	bool m_is_visible = true;
 	float* m_velocity;
 	float* m_colour;
@@ -21,10 +22,12 @@ public:
 	Shape();
 	Shape(const Shape&);
 	Shape(std::string, int[], float[], float[], float[]);
+	Shape(char*, int[], float[], float[], float[]);
 	virtual ~Shape();
 
 	// Getters
-	std::string get_name() const;
+	//std::string get_name() const;
+	char* get_c_name() const;
 	bool get_visibility() const;
 	int* get_position() const;
 	float* get_velocity() const;
@@ -32,7 +35,8 @@ public:
 	float* get_scale() const;
 
 	// Setters
-	void set_name(std::string);
+	//void set_name(std::string);
+	void set_c_name(char*);
 	void set_visibility(bool);
 	void set_position(int*);
 	void set_velocity(float*);
