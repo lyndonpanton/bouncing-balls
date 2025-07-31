@@ -7,6 +7,8 @@
 #include "Rectangle.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
 #include <fstream>
 
 void read_config_file(
@@ -57,8 +59,27 @@ int main()
 	sf::RenderWindow render_window;
 	sf::Font font;
 
+	// const char* items[] = {"AAAA", "BBBB", "CCCC", "DDDD"};
+	// static int item_index = 0;
+
 	read_config_file("config.txt", render_window, font, shapes);
 
+	std::vector<std::string> v_shape_names;
+
+	for (auto const& shape : shapes)
+	{
+		v_shape_names.push_back(shape->get_name());
+	}
+
+	std::vector<const char*> shape_names;
+
+	for (auto const& shape_name : v_shape_names)
+	{
+		shape_names.push_back(shape_name.data());
+	}
+
+	int shape_index = 0;
+	
 	ImGui::SFML::Init(render_window);
 	sf::Clock delta_clock;
 	render_window.setFramerateLimit(60);
@@ -78,7 +99,7 @@ int main()
 
 		ImGui::Begin("Edit Shapes");
 
-		//ImGui::Checkbox();
+		ImGui::Combo("Shapes", &shape_index, shape_names.data(), (int) shape_names.size());
 
 		ImGui::End();
 
