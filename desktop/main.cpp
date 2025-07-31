@@ -113,17 +113,10 @@ int main()
 		// Scale
 		float*& shape_scale = shapes.at(shape_index)->m_scale;
 		ImGui::SliderFloat("Scale", shape_scale, 0, 4);
-		//if (Circle* circle = dynamic_cast<Circle*>(shapes.at(shape_index)))
-		//{
-		//	circle->set_radius(circle->get_radius() * *shape_scale);
-		//}
-		//else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shapes.at(shape_index)))
-		//{
-		//	rectangle->set_width(rectangle->get_width() * *shape_scale);
-		//	rectangle->set_height(rectangle->get_height() * *shape_scale);
-		//}
 
 		// Velocity
+		float*& shape_velocity = shapes.at(shape_index)->m_velocity;
+		ImGui::SliderFloat2("Velocity", shape_velocity, -8, 8);
 
 		// Colour
 
