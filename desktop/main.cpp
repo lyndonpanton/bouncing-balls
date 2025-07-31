@@ -52,19 +52,20 @@ int main()
 			- [x] Allow users to edit the scale of a shape (0 to 4)**
 			- [ ] Allow users to modify the number of sides of a circle
 			- [ ] Allow users to reset the properties of a shape
-			- [ ] Set the scale of imgui
+			- [x] Set the scale of imgui
 				- ImGui::GetStyle().ScaleAllSizes(2.0f);
 				- ImGui::GetIO().FontGlobalScale = 2.0f;
+		- Maintanence
 			- [ ] * Modify the Shape class to use private member variables whilst
 			interacting with ImGui
 			- [ ] ** Make the Shape class only use a single primitive for the scale,
 			instead two values
 			- [x] *** Read and store colours as values from 0 to 1, convert them to
 			values from 0 to 255 only when using sfml
+			- [ ] Go over assignment brief code and make sure you have included
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
-			- [ ] Go over assignment brief code and make sure you have included
 			everything necessary
 			- [ ] Refactor the project to have all custom .cpp and .h code in main.cpp
 			- [ ] Write the full names of all team members at the top of the main.cpp file
@@ -98,6 +99,9 @@ int main()
 	sf::Clock delta_clock;
 	render_window.setFramerateLimit(60);
 
+	ImGui::GetStyle().ScaleAllSizes(2.0f);
+	ImGui::GetIO().FontGlobalScale = 2.0f;
+
 	while (render_window.isOpen())
 	{
 		sf::Event event;
@@ -117,8 +121,13 @@ int main()
 		ImGui::Combo("Shapes", &shape_index, c_shape_names.data(), (int) c_shape_names.size());
 
 		// Visibility
-		bool& is_selected_shape_drawn = shapes.at(shape_index)->m_is_visible;
+		bool& is_selected_shape_drawn = shapes.at(shape_index)->m_shape_is_visible;
 		ImGui::Checkbox("Draw Shape", &is_selected_shape_drawn);
+
+		ImGui::SameLine();
+
+		bool& is_selected_text_drawn = shapes.at(shape_index)->m_text_is_visible;
+		ImGui::Checkbox("Draw Text", &is_selected_text_drawn);
 
 		// Scale
 		float*& shape_scale = shapes.at(shape_index)->m_scale;
@@ -365,7 +374,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 {
 	for (auto& shape : shapes)
 	{
-		if (shape->get_visibility())
+		if (shape->get_shape_visibility() || shape->get_text_visibility())
 		{
 			if (Circle* circle = dynamic_cast<Circle*>(shape))
 			{
@@ -385,9 +394,13 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
 				);
 
-				if (circle->get_visibility())
+				if (circle->get_shape_visibility())
 				{
 					window.draw(sf_circle);
+				}
+
+				if (circle->get_text_visibility())
+				{
 					window.draw(circle_text);
 				}
 			}
@@ -411,9 +424,13 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					sf_rectangle.getGlobalBounds().getPosition().y + sf_rectangle.getLocalBounds().height / 4
 				);
 
-				if (rectangle->get_visibility())
+				if (rectangle->get_shape_visibility())
 				{
 					window.draw(sf_rectangle);
+				}
+
+				if (rectangle->get_text_visibility())
+				{
 					window.draw(rectangle_text);
 				}
 			}

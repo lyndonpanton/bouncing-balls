@@ -69,9 +69,14 @@ char* Shape::get_c_name() const
 	return c_name;
 }
 
-bool Shape::get_visibility() const
+bool Shape::get_shape_visibility() const
 {
-	return m_is_visible;
+	return m_shape_is_visible;
+}
+
+bool Shape::get_text_visibility() const
+{
+	return m_text_is_visible;
 }
 
 int* Shape::get_position() const
@@ -106,9 +111,14 @@ void Shape::set_c_name(char* name)
 	c_name = name;
 }
 
-void Shape::set_visibility(bool is_visible)
+void Shape::set_shape_visibility(bool is_visibile)
 {
-	m_is_visible = is_visible;
+	m_shape_is_visible = is_visibile;
+}
+
+void Shape::set_text_visibility(bool is_visibile)
+{
+	m_text_is_visible = is_visibile;
 }
 
 void Shape::set_position(int* position)
