@@ -52,11 +52,13 @@ int main()
 			- [x] Allow users to edit the scale of a shape (0 to 4)**
 			- [x] Allow users to modify the number of points of a circle
 			- [ ] Allow users to reset the properties of a shape?
-				- Look up how to do this
-				- Reset circle segments
+				- [ ] Name
+				- [x] Position
+				- [x] Velocity
+				- [ ] Colour
+				- [x] Scale
+				- [x] Circle segments
 			- [x] Set the scale of imgui
-				- ImGui::GetStyle().ScaleAllSizes(2.0f);
-				- ImGui::GetIO().FontGlobalScale = 2.0f;
 		- Maintanence
 			- [ ] * Modify the Shape class to use private member variables whilst
 			interacting with ImGui
@@ -64,11 +66,11 @@ int main()
 			instead two values
 			- [x] *** Read and store colours as values from 0 to 1, convert them to
 			values from 0 to 255 only when using sfml
-			- [ ] Go over assignment brief code and make sure you have included
-			everything necessary
 
 		- Submission
 			- The only file that needs to be submitted is main.cpp
+			everything necessary
+			- [ ] Go over assignment brief and make sure you have included
 			everything necessary
 			- [ ] Refactor the project to have all custom .cpp and .h code in main.cpp
 			- [ ] Write the full names of all team members at the top of the main.cpp file
@@ -148,12 +150,14 @@ int main()
 		ImGui::InputText("Name", shapes.at(shape_index)->get_name(), 255);
 		c_shape_names.at(shape_index) = shapes.at(shape_index)->get_name();
 
+		// Segments
 		if (Circle* circle = dynamic_cast<Circle*>(shapes.at(shape_index)))
 		{
 			int& circle_segments = circle->m_point_count;
 			ImGui::SliderInt("Segments", &circle_segments, 3, 64);
 		}
 
+		// Reset
 		if (ImGui::Button("Reset Shape"))
 		{
 			shapes.at(shape_index)->reset();

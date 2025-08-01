@@ -14,10 +14,11 @@ Shape::Shape()
 	, m_initial_colour(m_colour)
 	, m_initial_scale(m_scale)
 {
+	/*char initial_buffer[] = "Shape";
+	m_initial_name = initial_buffer;*/
+	
 	char buffer[] = "Shape";
 	m_name = buffer;
-	char initial_buffer[] = "Shape";
-	m_initial_name = initial_buffer;
 
 	m_initial_name = { m_name };
 	m_initial_velocity = { m_velocity };
@@ -28,7 +29,7 @@ Shape::Shape()
 
 Shape::Shape(
 	char* name, int position[], float velocity[], float colour[], float scale,
-	char* initial_name, int initial_position[], float initial_velocity[], float initial_colour[], float initial_scale
+	std::string initial_name, int initial_position[], float initial_velocity[], float initial_colour[], float initial_scale
 )
 	: m_name(name)
 	, m_position(new int[2] { position[0], position[1] })
@@ -137,8 +138,7 @@ void Shape::set_scale(float scale)
 
 void Shape::reset()
 {
-	std::cout << "Parent" << std::endl;
-	m_name = m_initial_name;
+	strcpy_s(m_name, m_initial_name.length() + 1, m_initial_name.data());
 	m_position = m_initial_position;
 	m_velocity = m_initial_velocity;
 	m_colour = m_initial_colour;

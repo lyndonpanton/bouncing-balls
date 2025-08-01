@@ -68,6 +68,5 @@ void Circle::set_segments(int segments)
 void Circle::reset()
 {
 	Shape::reset();
-	std::cout << "Child" << std::endl;
 	m_point_count = m_initial_point_count;
 }

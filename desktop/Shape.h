@@ -9,7 +9,7 @@
 class Shape
 {
 	int* m_position;
-	char* m_initial_name;
+	std::string m_initial_name;
 	int* m_initial_position;
 	float* m_initial_velocity;
 	float* m_initial_colour;
@@ -28,7 +28,7 @@ public:
 	Shape(const Shape&);
 	Shape(
 		char*, int[], float[], float[], float,
-		char*, int[], float[], float[], float
+		std::string , int[], float[], float[], float
 	);
 	virtual ~Shape();
 
