@@ -185,6 +185,9 @@ void Shape::set_scale(float scale)
 
 void Shape::reset()
 {
+	set_shape_visibility(true);
+	set_text_visibility(true);
+
 	memcpy(m_name, m_initial_name.c_str(), sizeof m_initial_name);
 
 	m_position = m_initial_position;
