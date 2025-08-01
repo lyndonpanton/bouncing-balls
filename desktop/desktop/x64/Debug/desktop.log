@@ -1,16 +1,16 @@
 ﻿  main-original.cpp
   main.cpp
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(707,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(707,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,63): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,63): warning C4244:         with
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,63): warning C4244:         [
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,63): warning C4244:             T=float
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,63): warning C4244:         ]
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,33): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,33): warning C4244:         with
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,33): warning C4244:         [
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,33): warning C4244:             T=float
-C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(737,33): warning C4244:         ]
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(713,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(713,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,63): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,63): warning C4244:         with
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,63): warning C4244:         [
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,63): warning C4244:             T=float
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,63): warning C4244:         ]
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,33): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,33): warning C4244:         with
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,33): warning C4244:         [
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,33): warning C4244:             T=float
+C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(746,33): warning C4244:         ]
   Generating Code...
   desktop.vcxproj -> C:\dev\projects\game-development\bouncing-balls\desktop\x64\Debug\desktop.exe

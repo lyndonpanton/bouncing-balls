@@ -380,23 +380,24 @@ void Rectangle::set_height(int height)
 
 void read_config_file(
 	std::string, sf::RenderWindow&,
-	sf::Font&, std::vector<Shape*>&
+	sf::Font&, sf::Text&, std::vector<Shape*>&
 );
 void read_config_file_window(sf::RenderWindow&, std::ifstream&);
-void read_config_file_font(sf::Font&, std::ifstream&);
+void read_config_file_font(sf::Font&, sf::Text&, std::ifstream&);
 void read_config_file_circle(std::vector<Shape*>&, std::ifstream&);
 void read_config_file_rectangle(std::vector<Shape*>&, std::ifstream&);
 
 void game_loop_update(sf::RenderWindow&, std::vector<Shape*>&);
-void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&, sf::Font&);
+void game_loop_draw(sf::RenderWindow& window, sf::Text&, std::vector<Shape*>&);
 
 int main()
 {
 	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
+	sf::Text text;
 
-	read_config_file("config.txt", render_window, font, shapes);
+	read_config_file("config.txt", render_window, font, text, shapes);
 
 	std::vector<std::string> s_shape_names;
 
@@ -474,7 +475,7 @@ int main()
 		render_window.clear(sf::Color(0, 0, 0));
 
 		game_loop_update(render_window, shapes);
-		game_loop_draw(render_window, shapes, font);
+		game_loop_draw(render_window, text, shapes);
 
 		ImGui::SFML::Render(render_window);
 		render_window.display();
@@ -487,7 +488,8 @@ int main()
 
 void read_config_file(
 	std::string filepath, sf::RenderWindow& render_window,
-	sf::Font& font, std::vector<Shape*>& shapes
+	sf::Font& font, sf::Text& text,
+	std::vector<Shape*>& shapes
 )
 {
 	std::ifstream file_input(filepath);
@@ -502,7 +504,7 @@ void read_config_file(
 		}
 		else if (line_type == "Font")
 		{
-			read_config_file_font(font, file_input);
+			read_config_file_font(font, text, file_input);
 		}
 		else if (line_type == "Circle")
 		{
@@ -533,7 +535,7 @@ void read_config_file_window(
 	render_window.create(sf::VideoMode(width, height), "Bouncing Balls");
 }
 
-void read_config_file_font(sf::Font& font, std::ifstream& file_input)
+void read_config_file_font(sf::Font& font, sf::Text& text, std::ifstream& file_input)
 {
 	std::string font_path;
 	int font_size;
@@ -549,6 +551,10 @@ void read_config_file_font(sf::Font& font, std::ifstream& file_input)
 		std::cerr << "Error: Could not load font" << std::endl;
 		exit(1);
 	}
+
+	text.setFont(font);
+	text.setCharacterSize(font_size);
+	text.setFillColor(sf::Color(red_value, green_value, blue_value));
 }
 
 void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_input)
@@ -692,7 +698,7 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 	}
 }
 
-void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::Font& font)
+void game_loop_draw(sf::RenderWindow& window, sf::Text& text, std::vector<Shape*>& shapes)
 {
 	for (auto& shape : shapes)
 	{
@@ -710,12 +716,15 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					(int)(circle->get_colour()[1] * 255),
 					(int)(circle->get_colour()[2] * 255)
 				));
-				sf::Text circle_text(circle->get_name(), font, 24);
-				circle_text.setPosition(
+				sf_circle.setPointCount(circle->get_point_count());
+
+				text.setString(circle->get_name());
+				//sf::Text circle_text(circle->get_name(), font, 24);
+				
+				text.setPosition(
 					sf_circle.getGlobalBounds().getPosition().x + sf_circle.getLocalBounds().width / 4,
 					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
 				);
-				sf_circle.setPointCount(circle->get_point_count());
 
 				if (circle->get_shape_visibility())
 				{
@@ -724,7 +733,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 
 				if (circle->get_text_visibility())
 				{
-					window.draw(circle_text);
+					window.draw(text);
 				}
 			}
 			else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
@@ -741,8 +750,11 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					(int)(rectangle->get_colour()[1] * 255),
 					(int)(rectangle->get_colour()[2] * 255)
 				));
-				sf::Text rectangle_text(rectangle->get_name(), font, 24);
-				rectangle_text.setPosition(
+
+				text.setString(rectangle->get_name());
+				//sf::Text rectangle_text(rectangle->get_name(), font, 24);
+				 
+				text.setPosition(
 					sf_rectangle.getGlobalBounds().getPosition().x + sf_rectangle.getLocalBounds().width / 4,
 					sf_rectangle.getGlobalBounds().getPosition().y + sf_rectangle.getLocalBounds().height / 4
 				);
@@ -754,7 +766,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 
 				if (rectangle->get_text_visibility())
 				{
-					window.draw(rectangle_text);
+					window.draw(text);
 				}
 			}
 		}
