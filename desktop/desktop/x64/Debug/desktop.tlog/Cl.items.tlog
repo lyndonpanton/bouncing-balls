@@ -4,6 +4,7 @@ C:\dev\projects\game-development\bouncing-balls\desktop\imgui\imgui.cpp;C:\dev\p
 C:\dev\projects\game-development\bouncing-balls\desktop\imgui\imgui_draw.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\imgui_draw.obj
 C:\dev\projects\game-development\bouncing-balls\desktop\imgui\imgui_tables.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\imgui_tables.obj
 C:\dev\projects\game-development\bouncing-balls\desktop\imgui\imgui_widgets.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\imgui_widgets.obj
+C:\dev\projects\game-development\bouncing-balls\desktop\main-original.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\main-original.obj
 C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\main.obj
 C:\dev\projects\game-development\bouncing-balls\desktop\Rectangle.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\Rectangle.obj
 C:\dev\projects\game-development\bouncing-balls\desktop\Shape.cpp;C:\dev\projects\game-development\bouncing-balls\desktop\desktop\x64\Debug\Shape.obj

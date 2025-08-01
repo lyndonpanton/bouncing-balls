@@ -1,2 +1,5 @@
-﻿  Shape.cpp
+﻿  Circle.cpp
+  Rectangle.cpp
+  Shape.cpp
+  Generating Code...
   desktop.vcxproj -> C:\dev\projects\game-development\bouncing-balls\desktop\x64\Debug\desktop.exe

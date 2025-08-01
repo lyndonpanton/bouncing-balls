@@ -8,16 +8,13 @@
 #include "imgui-SFML.h"
 #include "SFML/Graphics.hpp"
 
-#include "Shape.h"
-#include "Circle.h"
-#include "Rectangle.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <array>
 
+// Shape.h
 class Shape
 {
 	int* m_position;
@@ -35,7 +32,6 @@ public:
 	float* m_colour;
 	float m_scale;
 
-	// General
 	Shape();
 	Shape(const Shape&);
 	Shape(
@@ -44,7 +40,6 @@ public:
 	);
 	virtual ~Shape();
 
-	// Getters
 	char* get_name() const;
 	bool get_shape_visibility() const;
 	bool get_text_visibility() const;
@@ -53,7 +48,6 @@ public:
 	float* get_colour() const;
 	float get_scale() const;
 
-	// Setters
 	void set_name(char*);
 	void set_shape_visibility(bool);
 	void set_text_visibility(bool);
@@ -62,13 +56,10 @@ public:
 	void set_colour(float*);
 	void set_scale(float);
 
-	// Custom
 	virtual void reset();
 };
 
-
-// General
-
+// Shape.cpp
 Shape::Shape()
 	: m_position(new int[2] { 0, 0 })
 	, m_velocity(new float[2] { 0.0f, 0.0f })
@@ -79,9 +70,6 @@ Shape::Shape()
 	, m_initial_colour(m_colour)
 	, m_initial_scale(m_scale)
 {
-	/*char initial_buffer[] = "Shape";
-	m_initial_name = initial_buffer;*/
-
 	char buffer[] = "Shape";
 	m_name = buffer;
 
@@ -125,8 +113,6 @@ Shape::~Shape()
 
 }
 
-// Getters
-
 char* Shape::get_name() const
 {
 	return m_name;
@@ -161,8 +147,6 @@ float Shape::get_scale() const
 {
 	return m_scale;
 }
-
-// Setters
 
 void Shape::set_name(char* name)
 {
@@ -201,8 +185,6 @@ void Shape::set_scale(float scale)
 
 void Shape::reset()
 {
-	// Both methods work
-	//strcpy_s(m_name, m_initial_name.length() + 1, m_initial_name.data());
 	memcpy(m_name, m_initial_name.c_str(), sizeof m_initial_name);
 
 	m_position = m_initial_position;
@@ -215,6 +197,183 @@ void Shape::reset()
 	m_scale = m_initial_scale;
 }
 
+// Circle.h
+class Circle : public Shape
+{
+	int m_radius;
+
+public:
+	int m_point_count;
+	int m_initial_point_count;
+
+	Circle();
+	Circle(
+		char*, int[], float[], float[], float, int, int,
+		char*, int[], float[], float[], float, int
+	);
+	Circle(const Circle&);
+	~Circle();
+
+	int get_radius() const;
+	int get_point_count() const;
+
+	void set_radius(int);
+	void set_segments(int);
+
+	void reset() override;
+};
+
+// Circle.cpp
+Circle::Circle()
+	: Shape()
+	, m_radius(50)
+	, m_point_count(32)
+	, m_initial_point_count(m_point_count)
+{
+
+}
+
+Circle::Circle(const Circle& circle)
+	: Shape(
+		circle.get_name(), circle.get_position(), circle.get_velocity(), circle.get_colour(), circle.get_scale(),
+		circle.get_name(), circle.get_position(), circle.get_velocity(), circle.get_colour(), circle.get_scale()
+	)
+	, m_radius(circle.get_radius())
+	, m_point_count(circle.get_point_count())
+{
+	m_initial_point_count = m_point_count;
+}
+
+Circle::Circle(
+	char* name, int position[], float velocity[], float colour[], float scale, int radius, int point_count,
+	char* initial_name, int initial_position[], float initial_velocity[], float initial_colour[], float initial_scale,
+	int initial_point_count
+)
+	: Shape(
+		name, position, velocity, colour, scale,
+		initial_name, initial_position, initial_velocity, initial_colour, initial_scale
+	)
+	, m_radius(radius)
+	, m_point_count(point_count)
+	, m_initial_point_count(initial_point_count)
+{
+
+}
+
+Circle::~Circle()
+{
+
+}
+
+int Circle::get_radius() const
+{
+	return m_radius;
+}
+
+void Circle::set_radius(int radius)
+{
+	m_radius = radius;
+}
+
+int Circle::get_point_count() const
+{
+	return m_point_count;
+}
+
+void Circle::set_segments(int segments)
+{
+	m_point_count = segments;
+}
+
+void Circle::reset()
+{
+	Shape::reset();
+	m_point_count = m_initial_point_count;
+}
+
+// Rectangle.h
+class Rectangle : public Shape
+{
+	int m_width;
+	int m_height;
+
+public:
+	// General
+	Rectangle();
+	Rectangle(const Rectangle&);
+	Rectangle(
+		char*, int[], float[], float[], float, int, int,
+		char*, int[], float[], float[], float
+	);
+	~Rectangle();
+
+	// Getters
+	int get_width() const;
+	int get_height() const;
+
+	// Setters
+	void set_width(int);
+	void set_height(int);
+};
+
+// Rectangle.cpp
+Rectangle::Rectangle()
+	: Shape()
+	, m_width(100)
+	, m_height(50)
+{
+
+}
+
+Rectangle::Rectangle(const Rectangle& rectangle)
+	: Shape(
+		rectangle.get_name(), rectangle.get_position(), rectangle.get_velocity(), rectangle.get_colour(), rectangle.get_scale(),
+		rectangle.get_name(), rectangle.get_position(), rectangle.get_velocity(), rectangle.get_colour(), rectangle.get_scale()
+	)
+	, m_width(rectangle.get_width())
+	, m_height(rectangle.get_height())
+{
+
+}
+
+Rectangle::Rectangle(
+	char* name, int position[], float velocity[], float colour[], float scale, int width, int height,
+	char* initial_name, int initial_position[], float initial_velocity[], float initial_colour[], float initial_scale
+)
+	: Shape(
+		name, position, velocity, colour, scale,
+		initial_name, initial_position, initial_velocity, initial_colour, initial_scale
+	)
+	, m_width(width)
+	, m_height(height)
+{
+
+}
+
+Rectangle::~Rectangle()
+{
+
+}
+
+int Rectangle::get_width() const
+{
+	return m_width;
+}
+
+void Rectangle::set_width(int width)
+{
+	m_width = width;
+}
+
+int Rectangle::get_height() const
+{
+	return m_height;
+}
+
+void Rectangle::set_height(int height)
+{
+	m_height = height;
+}
 
 void read_config_file(
 	std::string, sf::RenderWindow&,
@@ -274,10 +433,8 @@ int main()
 
 		ImGui::Begin("Edit Shapes");
 
-		// Selected shape
 		ImGui::Combo("Shapes", &shape_index, c_shape_names.data(), (int)c_shape_names.size());
 
-		// Visibility
 		bool& is_selected_shape_drawn = shapes.at(shape_index)->m_shape_is_visible;
 		ImGui::Checkbox("Draw Shape", &is_selected_shape_drawn);
 
@@ -286,30 +443,24 @@ int main()
 		bool& is_selected_text_drawn = shapes.at(shape_index)->m_text_is_visible;
 		ImGui::Checkbox("Draw Text", &is_selected_text_drawn);
 
-		// Scale
 		float& shape_scale = shapes.at(shape_index)->m_scale;
 		ImGui::SliderFloat("Scale", &shape_scale, 0, 4);
 
-		// Velocity
 		float*& shape_velocity = shapes.at(shape_index)->m_velocity;
 		ImGui::SliderFloat2("Velocity", shape_velocity, -8, 8);
 
-		// Colour
 		float* shape_colour = shapes.at(shape_index)->m_colour;
 		ImGui::ColorEdit3("Colour", shape_colour);
 
-		// Name
 		ImGui::InputText("Name", shapes.at(shape_index)->get_name(), 255);
 		c_shape_names.at(shape_index) = shapes.at(shape_index)->get_name();
 
-		// Segments
 		if (Circle* circle = dynamic_cast<Circle*>(shapes.at(shape_index)))
 		{
 			int& circle_segments = circle->m_point_count;
 			ImGui::SliderInt("Segments", &circle_segments, 3, 64);
 		}
 
-		// Reset
 		if (ImGui::Button("Reset Shape"))
 		{
 			shapes.at(shape_index)->reset();
@@ -317,16 +468,11 @@ int main()
 
 		ImGui::End();
 
-		// Clear
 		render_window.clear(sf::Color(0, 0, 0));
 
-		// Update
 		game_loop_update(render_window, shapes);
-
-		// Draw
 		game_loop_draw(render_window, shapes, font);
 
-		// Render
 		ImGui::SFML::Render(render_window);
 		render_window.display();
 	}
@@ -400,9 +546,6 @@ void read_config_file_font(sf::Font& font, std::ifstream& file_input)
 		std::cerr << "Error: Could not load font" << std::endl;
 		exit(1);
 	}
-
-	std::cout << font_path << ", " << font_size << ", " << red_value << ", "
-		<< green_value << ", " << blue_value << std::endl;
 }
 
 void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_input)
