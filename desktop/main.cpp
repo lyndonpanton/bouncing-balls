@@ -51,7 +51,9 @@ int main()
 			- [x] Allow users to edit the colour of a shape***
 			- [x] Allow users to edit the scale of a shape (0 to 4)**
 			- [x] Allow users to modify the number of points of a circle
-			- [ ] Allow users to reset the properties of a shape
+			- [ ] Allow users to reset the properties of a shape?
+				- Look up how to do this
+				- Reset circle segments
 			- [x] Set the scale of imgui
 				- ImGui::GetStyle().ScaleAllSizes(2.0f);
 				- ImGui::GetIO().FontGlobalScale = 2.0f;
@@ -84,7 +86,7 @@ int main()
 
 	for (auto const& shape : shapes)
 	{
-		s_shape_names.push_back(shape->get_c_name());
+		s_shape_names.push_back(shape->get_name());
 	}
 
 	std::vector<const char*> c_shape_names;
@@ -100,8 +102,8 @@ int main()
 	sf::Clock delta_clock;
 	render_window.setFramerateLimit(60);
 
-	ImGui::GetStyle().ScaleAllSizes(2.0f);
-	ImGui::GetIO().FontGlobalScale = 2.0f;
+	ImGui::GetStyle().ScaleAllSizes(1.5f);
+	ImGui::GetIO().FontGlobalScale = 1.5f;
 
 	while (render_window.isOpen())
 	{
@@ -143,13 +145,18 @@ int main()
 		ImGui::ColorEdit3("Colour", shape_colour);
 
 		// Name
-		ImGui::InputText("Name", shapes.at(shape_index)->get_c_name(), 255);
-		c_shape_names.at(shape_index) = shapes.at(shape_index)->get_c_name();
+		ImGui::InputText("Name", shapes.at(shape_index)->get_name(), 255);
+		c_shape_names.at(shape_index) = shapes.at(shape_index)->get_name();
 
 		if (Circle* circle = dynamic_cast<Circle*>(shapes.at(shape_index)))
 		{
 			int& circle_segments = circle->m_point_count;
 			ImGui::SliderInt("Segments", &circle_segments, 3, 64);
+		}
+
+		if (ImGui::Button("Reset Shape"))
+		{
+			shapes.at(shape_index)->reset();
 		}
 
 		ImGui::End();
@@ -267,7 +274,13 @@ void read_config_file_circle(std::vector<Shape*>& shapes, std::ifstream& file_in
 		new float[3] { circle_red_value / 255.0f, circle_green_value / 255.0f, circle_blue_value / 255.0f },
 		1.0f,
 		circle_radius,
-		circle_point_count
+		circle_point_count,
+		circle_name,
+		new int[2] { circle_position_x, circle_position_y },
+		new float[2] { circle_velocity_x, circle_velocity_y },
+		new float[3] { circle_red_value / 255.0f, circle_green_value / 255.0f, circle_blue_value / 255.0f },
+		1.0f,
+		32
 	);
 
 	shapes.push_back(circle);
@@ -300,7 +313,12 @@ void read_config_file_rectangle(std::vector<Shape*>& shapes, std::ifstream& file
 		new float[3] { rectangle_red_value / 255.0f, rectangle_green_value / 255.0f, rectangle_blue_value / 255.0f },
 		1.0f,
 		rectangle_width,
-		rectangle_height
+		rectangle_height,
+		rectangle_name,
+		new int[2] { rectangle_position_x, rectangle_position_y },
+		new float[2] { rectangle_velocity_x, rectangle_velocity_y },
+		new float[3] { rectangle_red_value / 255.0f, rectangle_green_value / 255.0f, rectangle_blue_value / 255.0f },
+		1.0f
 	);
 
 	shapes.push_back(rectangle);
@@ -390,7 +408,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					(int) (circle->get_colour()[1] * 255),
 					(int) (circle->get_colour()[2] * 255)
 				));
-				sf::Text circle_text(circle->get_c_name(), font, 24);
+				sf::Text circle_text(circle->get_name(), font, 24);
 				circle_text.setPosition(
 					sf_circle.getGlobalBounds().getPosition().x + sf_circle.getLocalBounds().width / 4,
 					sf_circle.getGlobalBounds().getPosition().y + sf_circle.getLocalBounds().height / 3
@@ -421,7 +439,7 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					(int) (rectangle->get_colour()[1] * 255),
 					(int) (rectangle->get_colour()[2] * 255)
 				));
-				sf::Text rectangle_text(rectangle->get_c_name(), font, 24);
+				sf::Text rectangle_text(rectangle->get_name(), font, 24);
 				rectangle_text.setPosition(
 					sf_rectangle.getGlobalBounds().getPosition().x + sf_rectangle.getLocalBounds().width / 4,
 					sf_rectangle.getGlobalBounds().getPosition().y + sf_rectangle.getLocalBounds().height / 4

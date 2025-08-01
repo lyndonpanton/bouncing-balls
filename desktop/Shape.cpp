@@ -1,5 +1,7 @@
 #include "Shape.h"
 
+#include <iostream>
+
 // General
 
 Shape::Shape()
@@ -7,33 +9,43 @@ Shape::Shape()
 	, m_velocity(new float[2] { 0.0f, 0.0f })
 	, m_colour(new float[3] { 0, 0, 0 })
 	, m_scale(1.0f)
+	, m_initial_position(m_position)
+	, m_initial_velocity(m_velocity)
+	, m_initial_colour(m_colour)
+	, m_initial_scale(m_scale)
 {
 	char buffer[] = "Shape";
-	c_name = buffer;
+	m_name = buffer;
+	char initial_buffer[] = "Shape";
+	m_initial_name = initial_buffer;
+
+	m_initial_name = { m_name };
+	m_initial_velocity = { m_velocity };
+	m_initial_position = { m_position };
+	m_initial_colour = { m_colour };
+	m_initial_scale = m_scale;
 }
 
-Shape::Shape(char* name, int position[], float velocity[], float colour[], float scale)
-	: c_name(name)
+Shape::Shape(
+	char* name, int position[], float velocity[], float colour[], float scale,
+	char* initial_name, int initial_position[], float initial_velocity[], float initial_colour[], float initial_scale
+)
+	: m_name(name)
 	, m_position(new int[2] { position[0], position[1] })
 	, m_velocity(new float[2] { velocity[0], velocity[1] })
 	, m_colour(new float[3] { colour[0], colour[1], colour[2] })
-	, m_scale(1.0f)
+	, m_scale(scale)
+	, m_initial_name(initial_name)
+	, m_initial_position(initial_position)
+	, m_initial_velocity(initial_velocity)
+	, m_initial_colour(initial_colour)
+	, m_initial_scale(initial_scale)
 {
 
 }
 
-//Shape::Shape(const Shape& shape)
-//	: m_name(shape.get_name())
-//	, m_position(shape.get_position())
-//	, m_velocity(shape.get_velocity())
-//	, m_colour(shape.get_colour())
-//	, m_scale(shape.get_scale())
-//{
-//
-//}
-
 Shape::Shape(const Shape& shape)
-	: c_name(shape.get_c_name())
+	: m_name(shape.get_name())
 	, m_position(shape.get_position())
 	, m_velocity(shape.get_velocity())
 	, m_colour(shape.get_colour())
@@ -49,14 +61,9 @@ Shape::~Shape()
 
 // Getters
 
-//std::string Shape::get_name() const
-//{
-//	return m_name;
-//}
-
-char* Shape::get_c_name() const
+char* Shape::get_name() const
 {
-	return c_name;
+	return m_name;
 }
 
 bool Shape::get_shape_visibility() const
@@ -91,14 +98,9 @@ float Shape::get_scale() const
 
 // Setters
 
-//void Shape::set_name(std::string name)
-//{
-//	m_name = name;
-//}
-
-void Shape::set_c_name(char* name)
+void Shape::set_name(char* name)
 {
-	c_name = name;
+	m_name = name;
 }
 
 void Shape::set_shape_visibility(bool is_visibile)
@@ -129,4 +131,16 @@ void Shape::set_colour(float* colour)
 void Shape::set_scale(float scale)
 {
 	m_scale = scale;
+}
+
+// General
+
+void Shape::reset()
+{
+	std::cout << "Parent" << std::endl;
+	m_name = m_initial_name;
+	m_position = m_initial_position;
+	m_velocity = m_initial_velocity;
+	m_colour = m_initial_colour;
+	m_scale = m_initial_scale;
 }
