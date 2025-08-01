@@ -1,5 +1,4 @@
-﻿  Shape.cpp
-  main-original.cpp
+﻿  main-original.cpp
   main.cpp
 C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(707,78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\dev\projects\game-development\bouncing-balls\desktop\main.cpp(707,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data

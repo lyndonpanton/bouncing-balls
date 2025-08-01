@@ -16,6 +16,21 @@ initial shape data from a text file.
 
 ### Features
 
+- Shapess of different sizes and velocities move inside the window
+- Users can choose the Shape they want to select
+- A selected Shape can have its properties modified
+    - Shape visibility
+    - Name visibility
+    - Name
+    - X Velocity
+    - Y Velocity
+    - Colour
+        - Via RGB values
+        - Via colour picker
+    - Scale
+- Circle Shapes can have their point count property modified
+- A selected Shape can have its properties reset
+
 ### Technology
 
 - Languages: C++
