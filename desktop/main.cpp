@@ -1,3 +1,9 @@
+/*
+	Team members
+
+	- Lyndon Mykal Panton
+*/
+
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "SFML/Graphics.hpp"
@@ -10,6 +16,205 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <array>
+
+class Shape
+{
+	int* m_position;
+	std::string m_initial_name;
+	int* m_initial_position;
+	float* m_initial_velocity;
+	float* m_initial_colour;
+	float m_initial_scale;
+
+public:
+	char* m_name;
+	bool m_shape_is_visible = true;
+	bool m_text_is_visible = true;
+	float* m_velocity;
+	float* m_colour;
+	float m_scale;
+
+	// General
+	Shape();
+	Shape(const Shape&);
+	Shape(
+		char*, int[], float[], float[], float,
+		std::string, int[], float[], float[], float
+	);
+	virtual ~Shape();
+
+	// Getters
+	char* get_name() const;
+	bool get_shape_visibility() const;
+	bool get_text_visibility() const;
+	int* get_position() const;
+	float* get_velocity() const;
+	float* get_colour() const;
+	float get_scale() const;
+
+	// Setters
+	void set_name(char*);
+	void set_shape_visibility(bool);
+	void set_text_visibility(bool);
+	void set_position(int*);
+	void set_velocity(float*);
+	void set_colour(float*);
+	void set_scale(float);
+
+	// Custom
+	virtual void reset();
+};
+
+
+// General
+
+Shape::Shape()
+	: m_position(new int[2] { 0, 0 })
+	, m_velocity(new float[2] { 0.0f, 0.0f })
+	, m_colour(new float[3] { 0, 0, 0 })
+	, m_scale(1.0f)
+	, m_initial_position(m_position)
+	, m_initial_velocity(m_velocity)
+	, m_initial_colour(m_colour)
+	, m_initial_scale(m_scale)
+{
+	/*char initial_buffer[] = "Shape";
+	m_initial_name = initial_buffer;*/
+
+	char buffer[] = "Shape";
+	m_name = buffer;
+
+	m_initial_name = { m_name };
+	m_initial_velocity = { m_velocity };
+	m_initial_position = { m_position };
+	m_initial_colour = { m_colour };
+	m_initial_scale = m_scale;
+}
+
+Shape::Shape(
+	char* name, int position[], float velocity[], float colour[], float scale,
+	std::string initial_name, int initial_position[], float initial_velocity[], float initial_colour[], float initial_scale
+)
+	: m_name(name)
+	, m_position(new int[2] { position[0], position[1] })
+	, m_velocity(new float[2] { velocity[0], velocity[1] })
+	, m_colour(new float[3] { colour[0], colour[1], colour[2] })
+	, m_scale(scale)
+	, m_initial_name(initial_name)
+	, m_initial_position(initial_position)
+	, m_initial_velocity(initial_velocity)
+	, m_initial_colour(initial_colour)
+	, m_initial_scale(initial_scale)
+{
+
+}
+
+Shape::Shape(const Shape& shape)
+	: m_name(shape.get_name())
+	, m_position(shape.get_position())
+	, m_velocity(shape.get_velocity())
+	, m_colour(shape.get_colour())
+	, m_scale(shape.get_scale())
+{
+
+}
+
+Shape::~Shape()
+{
+
+}
+
+// Getters
+
+char* Shape::get_name() const
+{
+	return m_name;
+}
+
+bool Shape::get_shape_visibility() const
+{
+	return m_shape_is_visible;
+}
+
+bool Shape::get_text_visibility() const
+{
+	return m_text_is_visible;
+}
+
+int* Shape::get_position() const
+{
+	return m_position;
+}
+
+float* Shape::get_velocity() const
+{
+	return m_velocity;
+}
+
+float* Shape::get_colour() const
+{
+	return m_colour;
+}
+
+float Shape::get_scale() const
+{
+	return m_scale;
+}
+
+// Setters
+
+void Shape::set_name(char* name)
+{
+	m_name = name;
+}
+
+void Shape::set_shape_visibility(bool is_visibile)
+{
+	m_shape_is_visible = is_visibile;
+}
+
+void Shape::set_text_visibility(bool is_visibile)
+{
+	m_text_is_visible = is_visibile;
+}
+
+void Shape::set_position(int* position)
+{
+	m_position = position;
+}
+
+void Shape::set_velocity(float* velocity)
+{
+	m_velocity = velocity;
+}
+
+void Shape::set_colour(float* colour)
+{
+	m_colour = colour;
+}
+
+void Shape::set_scale(float scale)
+{
+	m_scale = scale;
+}
+
+void Shape::reset()
+{
+	// Both methods work
+	//strcpy_s(m_name, m_initial_name.length() + 1, m_initial_name.data());
+	memcpy(m_name, m_initial_name.c_str(), sizeof m_initial_name);
+
+	m_position = m_initial_position;
+	m_velocity = m_initial_velocity;
+
+	m_colour[0] = *(&m_initial_colour[0]);
+	m_colour[1] = *(&m_initial_colour[1]);
+	m_colour[2] = *(&m_initial_colour[2]);
+
+	m_scale = m_initial_scale;
+}
+
 
 void read_config_file(
 	std::string, sf::RenderWindow&,
@@ -25,59 +230,6 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>&, sf::Font&);
 
 int main()
 {
-	/*
-		TODO
-
-		- SFML
-			- [x] Shapes should bounce off the bounds of the window
-			- [x] Add point count to Circle class
-				- [x] Allow users to modify the point count of a circle
-			- [x] Shape class only needs a primitive for the scale (not an
-			array)
-			- [ ] Display the name of shapes in the center of shapes on the screen
-				- [x] Display names
-				- [ ] Center names
-			- You do not have to handle the event where users rapidly change a shape's
-			scale which causes it to go out of the bounds of the window
-
-		- ImGui
-			- [x] Have a list of all shapes (combo box)
-			- [x] Allow users to edit the visibility of a shape*
-			- [x] Allow users to edit the visibility of a shape's text
-			- [x] Allow users to edit the name of a shape
-				- [x] Names should change in the sfml ui
-				- [x] Names should change in the imgui dropdown
-			- [x] Allow users to edit the velocity of a shape (-8 to 8)
-			- [x] Allow users to edit the colour of a shape***
-			- [x] Allow users to edit the scale of a shape (0 to 4)**
-			- [x] Allow users to modify the number of points of a circle
-			- [ ] Allow users to reset the properties of a shape?
-				- [ ] Name
-				- [x] Position
-				- [x] Velocity
-				- [ ] Colour
-				- [x] Scale
-				- [x] Circle segments
-			- [x] Set the scale of imgui
-		- Maintanence
-			- [ ] * Modify the Shape class to use private member variables whilst
-			interacting with ImGui
-			- [x] ** Make the Shape class only use a single primitive for the scale,
-			instead two values
-			- [x] *** Read and store colours as values from 0 to 1, convert them to
-			values from 0 to 255 only when using sfml
-
-		- Submission
-			- The only file that needs to be submitted is main.cpp
-			everything necessary
-			- [ ] Go over assignment brief and make sure you have included
-			everything necessary
-			- [ ] Refactor the project to have all custom .cpp and .h code in main.cpp
-			- [ ] Write the full names of all team members at the top of the main.cpp file
-			- [ ] If you did not manage to get a specific feature working, please try to
-			explain why you did not manage it and what approaches you took
-	*/
-
 	std::vector<Shape*> shapes;
 	sf::RenderWindow render_window;
 	sf::Font font;
@@ -99,7 +251,7 @@ int main()
 	}
 
 	int shape_index = 0;
-	
+
 	ImGui::SFML::Init(render_window);
 	sf::Clock delta_clock;
 	render_window.setFramerateLimit(60);
@@ -123,7 +275,7 @@ int main()
 		ImGui::Begin("Edit Shapes");
 
 		// Selected shape
-		ImGui::Combo("Shapes", &shape_index, c_shape_names.data(), (int) c_shape_names.size());
+		ImGui::Combo("Shapes", &shape_index, c_shape_names.data(), (int)c_shape_names.size());
 
 		// Visibility
 		bool& is_selected_shape_drawn = shapes.at(shape_index)->m_shape_is_visible;
@@ -214,7 +366,7 @@ void read_config_file(
 		else
 		{
 			std::cout << "Error: Line type not recognised (config.txt)"
-					<< std::endl;
+				<< std::endl;
 		}
 	}
 }
@@ -340,57 +492,57 @@ void game_loop_update(sf::RenderWindow& window, std::vector<Shape*>& shapes)
 			if (
 				circle->get_position()[0] + circle->get_velocity()[0] <= 0
 				|| circle->get_position()[0] + (circle->get_radius() * 2 * circle->get_scale())
-					+ circle->get_velocity()[0] >= window_width
-			)
+				+ circle->get_velocity()[0] >= window_width
+				)
 			{
 				circle->set_velocity(new float[2] {
 					circle->get_velocity()[0] * -1,
-					circle->get_velocity()[1]
-				});
+						circle->get_velocity()[1]
+					});
 			}
 
 			if (
 				circle->get_position()[1] + circle->get_velocity()[1] <= 0
 				|| circle->get_position()[1] + (circle->get_radius() * 2 * circle->get_scale())
-					+ circle->get_velocity()[1] >= window_height
-			)
+				+ circle->get_velocity()[1] >= window_height
+				)
 			{
 				circle->set_velocity(new float[2] {
 					circle->get_velocity()[0],
-					circle->get_velocity()[1] * -1
-				});
+						circle->get_velocity()[1] * -1
+					});
 			}
-		} 
+		}
 		else if (Rectangle* rectangle = dynamic_cast<Rectangle*>(shape))
 		{
 			if (
 				rectangle->get_position()[0] + rectangle->get_velocity()[0] <= 0
 				|| rectangle->get_position()[0] + (rectangle->get_width() * rectangle->get_scale())
-					+ rectangle->get_velocity()[0] >= window_width
-			)
+				+ rectangle->get_velocity()[0] >= window_width
+				)
 			{
 				rectangle->set_velocity(new float[2] {
 					rectangle->get_velocity()[0] * -1,
-					rectangle->get_velocity()[1]
-				});
+						rectangle->get_velocity()[1]
+					});
 			}
 			if (
 				rectangle->get_position()[1] + rectangle->get_velocity()[1] <= 0
 				|| rectangle->get_position()[1] + (rectangle->get_height() * rectangle->get_scale())
-					+ rectangle->get_velocity()[0] >= window_height
-			)
+				+ rectangle->get_velocity()[0] >= window_height
+				)
 			{
 				rectangle->set_velocity(new float[2] {
 					rectangle->get_velocity()[0],
-					rectangle->get_velocity()[1] * -1
-				});
+						rectangle->get_velocity()[1] * -1
+					});
 			}
 		}
 
 		shape->set_position(new int[2] {
 			shape->get_position()[0] + (int)shape->get_velocity()[0],
-			shape->get_position()[1] + (int)shape->get_velocity()[1]
-		});
+				shape->get_position()[1] + (int)shape->get_velocity()[1]
+			});
 	}
 }
 
@@ -408,9 +560,9 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 				);
 				sf_circle.setPosition(circle->get_position()[0], circle->get_position()[1]);
 				sf_circle.setFillColor(sf::Color(
-					(int) (circle->get_colour()[0] * 255),
-					(int) (circle->get_colour()[1] * 255),
-					(int) (circle->get_colour()[2] * 255)
+					(int)(circle->get_colour()[0] * 255),
+					(int)(circle->get_colour()[1] * 255),
+					(int)(circle->get_colour()[2] * 255)
 				));
 				sf::Text circle_text(circle->get_name(), font, 24);
 				circle_text.setPosition(
@@ -439,9 +591,9 @@ void game_loop_draw(sf::RenderWindow& window, std::vector<Shape*>& shapes, sf::F
 					rectangle->get_position()[0], rectangle->get_position()[1]
 				));
 				sf_rectangle.setFillColor(sf::Color(
-					(int) (rectangle->get_colour()[0] * 255),
-					(int) (rectangle->get_colour()[1] * 255),
-					(int) (rectangle->get_colour()[2] * 255)
+					(int)(rectangle->get_colour()[0] * 255),
+					(int)(rectangle->get_colour()[1] * 255),
+					(int)(rectangle->get_colour()[2] * 255)
 				));
 				sf::Text rectangle_text(rectangle->get_name(), font, 24);
 				rectangle_text.setPosition(

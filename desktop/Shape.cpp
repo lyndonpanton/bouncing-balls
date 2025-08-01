@@ -138,9 +138,16 @@ void Shape::set_scale(float scale)
 
 void Shape::reset()
 {
-	strcpy_s(m_name, m_initial_name.length() + 1, m_initial_name.data());
+	// Both methods work
+	//strcpy_s(m_name, m_initial_name.length() + 1, m_initial_name.data());
+	memcpy(m_name, m_initial_name.c_str(), sizeof m_initial_name);
+
 	m_position = m_initial_position;
 	m_velocity = m_initial_velocity;
-	m_colour = m_initial_colour;
+
+	m_colour[0] = *(&m_initial_colour[0]);
+	m_colour[1] = *(&m_initial_colour[1]);
+	m_colour[2] = *(&m_initial_colour[2]);
+
 	m_scale = m_initial_scale;
 }
